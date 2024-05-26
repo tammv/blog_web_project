@@ -10,6 +10,9 @@ export default function DashUsers() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState('');
+  const [userIdToUpdate, setUserIdToUpdate] = useState('');
+  const [updateType, setUpdateType] = useState('');
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -48,18 +51,42 @@ export default function DashUsers() {
 
   const handleDeleteUser = async () => {
     try {
-        const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
-            method: 'DELETE',
-        });
-        const data = await res.json();
-        if (res.ok) {
-            setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
-            setShowModal(false);
-        } else {
-            console.log(data.message);
-        }
+      const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
+        setShowModal(false);
+      } else {
+        console.log(data.message);
+      }
     } catch (error) {
-        console.log(error.message);
+      console.log(error.message);
+    }
+  };
+
+  const handleUpdateUserToAdmin = async () => {
+    try {
+      const res = await fetch(`/api/users/${userIdToUpdate}/admin`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers((prev) =>
+          prev.map((user) =>
+            user._id === userIdToUpdate ? { ...user, isAdmin: true } : user
+          )
+        );
+        setShowModal(false);
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -74,7 +101,7 @@ export default function DashUsers() {
               <Table.HeadCell>Username</Table.HeadCell>
               <Table.HeadCell>Email</Table.HeadCell>
               <Table.HeadCell>Admin</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
+              <Table.HeadCell>Actions</Table.HeadCell>
             </Table.Head>
             {users.map((user) => (
               <Table.Body className='divide-y' key={user._id}>
@@ -99,10 +126,23 @@ export default function DashUsers() {
                     )}
                   </Table.Cell>
                   <Table.Cell>
+                    {!user.isAdmin && (
+                      <span
+                        onClick={() => {
+                          setShowModal(true);
+                          setUserIdToUpdate(user._id);
+                          setUpdateType('admin');
+                        }}
+                        className='font-medium text-blue-500 hover:underline cursor-pointer'
+                      >
+                        Make Admin
+                      </span>
+                    )}
                     <span
                       onClick={() => {
                         setShowModal(true);
                         setUserIdToDelete(user._id);
+                        setUpdateType('delete');
                       }}
                       className='font-medium text-red-500 hover:underline cursor-pointer'
                     >
@@ -136,10 +176,21 @@ export default function DashUsers() {
           <div className='text-center'>
             <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
             <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
-              Are you sure you want to delete this user?
+              {`Are you sure you want to ${
+                updateType === 'admin'
+                  ? 'promote this user to admin'
+                  : 'delete this user'
+              }?`}
             </h3>
             <div className='flex justify-center gap-4'>
-              <Button color='failure' onClick={handleDeleteUser}>
+              <Button
+                color='failure'
+                onClick={
+                  updateType === 'admin'
+                    ? handleUpdateUserToAdmin
+                    : handleDeleteUser
+                }
+              >
                 Yes, I'm sure
               </Button>
               <Button color='gray' onClick={() => setShowModal(false)}>

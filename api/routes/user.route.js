@@ -6,7 +6,7 @@ import {
   signout,
   test,
   updateUser,
-  updateAdminStatus
+  makeAdmin
 } from '../controllers/user.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
 
@@ -18,7 +18,7 @@ router.delete('/delete/:userId', verifyToken, deleteUser);
 router.post('/signout', signout);
 router.get('/getusers', verifyToken, getUsers);
 router.get('/:userId', getUser);
-router.patch('/:userId/admin', verifyToken, updateAdminStatus);
+router.patch('/:userId/admin', verifyToken, makeAdmin);
 
 
 export default router;

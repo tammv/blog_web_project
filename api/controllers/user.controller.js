@@ -132,25 +132,23 @@ export const getUser = async (req, res, next) => {
   }
 };
 
-export const updateAdminStatus = async (req, res, next) => {
+export const makeAdmin = async (req, res, next) => {
   if (!req.user.isAdmin) {
-    return next(errorHandler(403, 'You are not allowed to update admin status'));
+    return next(errorHandler(403, 'You are not allowed to update this user'));
   }
 
   try {
-    const user = await User.findById(req.params.userId);
-    if (!user) {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      { isAdmin: true },
+      { new: true }
+    );
+
+    if (!updatedUser) {
       return next(errorHandler(404, 'User not found'));
     }
 
-    if (user.isAdmin) {
-      return next(errorHandler(400, 'User is already an admin'));
-    }
-
-    user.isAdmin = true;
-    await user.save();
-
-    const { password, ...rest } = user._doc;
+    const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
   } catch (error) {
     next(error);
