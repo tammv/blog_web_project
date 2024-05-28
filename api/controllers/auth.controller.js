@@ -2,12 +2,22 @@ import User from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
+import { validPassword, validEmail } from "../utils/validate.js";
 
 export const signup = async (req, res, next) => {
     const {username, password, email, isAdmin, isPremium, profilePicture, dateOfPre} = req.body;
 
     if(!username || !password || !email || username === '' || password === '' || email === ''){
         next(errorHandler(400, 'All fields are required'));
+    }
+
+    if(!validPassword.test(password)){
+        console.log(password);
+        next(errorHandler(400, 'Password must minimum six characters, at least one letter, one number'));
+    }
+
+    if(!validEmail.test(email)){
+        next(errorHandler(400, 'Invalid email'));
     }
 
     const hashedPassword = bcryptjs.hashSync(password, 10);

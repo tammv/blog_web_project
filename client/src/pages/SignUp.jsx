@@ -28,6 +28,7 @@ export default function SignUp() {
       });
       const data = await res.json();
       if(data.success === false){
+        setLoading(false);
         return setErrorMessages(data.message);
       }
       setLoading(false);
@@ -64,7 +65,7 @@ export default function SignUp() {
             </div>
             <div className="">
               <Label value='Your password'/>
-              <TextInput type='password' placeholder='Password' id='password' onChange={handleChange}/>
+              <TextInput type='password' placeholder='Must minimum 6 characters, least 1 letter, 1 number' id='password' onChange={handleChange}/>
             </div>
             <Button gradientDuoTone='purpleToPink' type='submit' disabled={loading}>
               {
