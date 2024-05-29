@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from 'bcryptjs'
+import { validPassword, validEmail } from "../utils/validate.js";
 
 export const test = (req, res) => {
     res.json({message: 'API is working'})
@@ -11,8 +12,12 @@ export const updateUser = async(req, res, next) =>{
         return next(errorHandler(403, 'You are not allowed to update this user'));
     }
     if(req.body.password){
-        if(req.body.password.length < 6){
-            return next(errorHandler(400, 'Password must be at least 6 characters'));
+        if(!validPassword.test(req.body.password)){
+            return next(errorHandler(400, 'Password must minimum six characters, at least one letter, one number'));
+        }
+    
+        if(!validEmail.test(req.body.password)){
+            return next(errorHandler(400, 'Invalid email'));
         }
         req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
