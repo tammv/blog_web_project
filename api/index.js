@@ -10,7 +10,6 @@ import topicRoutes from "./routes/topic.route.js";
 import reportRoutes from "./routes/report.route.js";
 import cookieParser from "cookie-parser";
 
-
 dotenv.config();
 
 mongoose
@@ -34,10 +33,10 @@ app.listen(3000, () => {
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/payments", paymentRoutes);
-app.use("/api/comments", commentRoutes);
-app.use("/api/topics", topicRoutes);
-app.use('/api/reports', reportRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/comment", commentRoutes);
+app.use("/api/topic", topicRoutes);
+app.use("/api/report", reportRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

@@ -7,16 +7,14 @@ import { useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
-// Import the custom CSS
 
 export default function CreatePost() {
   const [file, setFile] = useState(null);
-  //   const { theme } = useSelector((state) => state.theme);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
-  const [darkMode, setDarkMode] = useState(false); // State to manage dark mode
+  const [darkMode] = useState(false);
 
   const navigate = useNavigate();
 
@@ -94,11 +92,17 @@ export default function CreatePost() {
             className="flex-1"
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           />
-          <Select onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
-            <option value="uncategorized">Select a category</option>
-            <option value="javascript">JavaScript</option>
-            <option value="reactjs">React.js</option>
-            <option value="nextjs">Next.js</option>
+          <Select onChange={(e) => setFormData({ ...formData, topicID: e.target.value })}>
+            <option value="">Select a category</option>
+            <option value="665ec007773530163eb06766">JavaScript</option>
+            <option value="665ec0a7773530163eb06768">React.js</option>
+            <option value="665ec140773530163eb0676a">NodeJS</option>
+            <option value="665ec155773530163eb0676c">Mobile</option>
+            <option value="665ec16c773530163eb0676e">WEB</option>
+            <option value="665ec183773530163eb06770">SQL</option>
+            <option value="665ec19f773530163eb06772">MySQL</option>
+            <option value="665ec1b6773530163eb06774">Techs News</option>
+            <option value="665ec1d1773530163eb06776">Life Style</option>
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">

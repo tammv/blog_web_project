@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const topicSchema = new mongoose.Schema(
   {
@@ -7,13 +7,14 @@ const topicSchema = new mongoose.Schema(
       required: true,
     },
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    }
-  }, { timestamps: true }
+      type: mongoose.Schema.Types.ObjectId,
+      required: false,
+      ref: "User",
+    },
+  },
+  { timestamps: true }
 );
 
-const Topic = mongoose.model('Topic', topicSchema);
+const Topic = mongoose.model("Topic", topicSchema);
 
 export default Topic;
