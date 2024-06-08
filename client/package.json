@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.2.5",
     "firebase": "^10.12.1",
     "flowbite-react": "^0.7.0",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.2.0",
@@ -23,6 +24,7 @@
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react-swc": "^3.5.0",
