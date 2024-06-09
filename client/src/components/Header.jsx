@@ -56,6 +56,10 @@ export default function Header() {
             <Link to={"/dashboard?tab=profile"}>
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
+
+            <Link to={"/dashboard?tab=profile"}>
+              <Dropdown.Item>Upgrade Account</Dropdown.Item>
+            </Link>
             <Dropdown.Divider />
             <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
           </Dropdown>

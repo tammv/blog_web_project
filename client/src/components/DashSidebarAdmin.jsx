@@ -45,7 +45,7 @@ export default function DashSidebar() {
           {/* payment */}
           <Link to="/Upgrade">
             <Sidebar.Item labelColor="dark" as="div">
-              Post
+              Upgrade Account
             </Sidebar.Item>
           </Link>
           <Sidebar.Item active icon={HiArrowSmRight} className="cursor-pointer" onClick={handleSignout}>
