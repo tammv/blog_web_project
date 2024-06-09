@@ -68,9 +68,6 @@ export default function Home() {
               <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl dark:text-white">
                 Latest from blog
               </h2>
-              {/* <p className="max-w-xl mx-auto mt-4 text-base leading-relaxed text-gray-600 lg:mx-0 dark:text-gray-400">
-                Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis.
-              </p> */}
             </div>
             <div className="hidden lg:flex lg:items-center lg:space-x-3">
               <button

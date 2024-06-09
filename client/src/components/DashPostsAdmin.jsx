@@ -26,8 +26,9 @@ export default function DashPosts() {
         console.log(error.message);
       }
     };
-
-    fetchPosts();
+    if (currentUser.isAdmin) {
+      fetchPosts();
+    }
   }, [currentUser._id]);
 
   const handleShowMore = async () => {
@@ -124,7 +125,11 @@ export default function DashPosts() {
                     <Link
                       className='text-teal-500 hover:underline'
                       to={`/update-post/${post._id}`}
+                    >
                       <span>Edit</span>
+                    </Link>
+                  </Table.Cell>
+                </Table.Row>
               </Table.Body>
             ))}
           </Table>
@@ -167,4 +172,3 @@ export default function DashPosts() {
     </div>
   );
 }
-
