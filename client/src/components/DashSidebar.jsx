@@ -25,10 +25,13 @@ export default function DashSidebar() {
         method: "POST",
       });
       const data = await res.json();
+
       if (!res.ok) {
         console.log(data.message);
       } else {
         dispatch(signoutSuccess());
+
+        window.location.href = "/sign-in";
       }
     } catch (error) {
       console.log(error.message);
@@ -56,27 +59,29 @@ export default function DashSidebar() {
             >
               Profile
             </Sidebar.Item>
-            <Link to="/dashboard?tab=posts">
-              <Sidebar.Item active={tab === "posts"} icon={HiDocumentText} as="div">
-                Posts
-              </Sidebar.Item>
-            </Link>
           </Link>
+
+          <Link to="/dashboard?tab=posts">
+            <Sidebar.Item active={tab === "posts"} icon={HiDocumentText} as="div">
+              Posts
+            </Sidebar.Item>
+          </Link>
+
           {currentUser.isAdmin && (
             <>
               <Link to="/dashboard?tab=postsadmin">
                 <Sidebar.Item active={tab === "posts"} icon={HiDocumentText} as="div">
-                  Posts
+                  Manage Posts
                 </Sidebar.Item>
               </Link>
               <Link to="/dashboard?tab=users">
                 <Sidebar.Item active={tab === "users"} icon={HiOutlineUserGroup} as="div">
-                  Users
+                  Manage Users
                 </Sidebar.Item>
               </Link>
               <Link to="/dashboard?tab=comments">
                 <Sidebar.Item active={tab === "comments"} icon={HiAnnotation} as="div">
-                  Comments
+                  Manage Comments
                 </Sidebar.Item>
               </Link>
             </>
