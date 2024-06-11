@@ -75,9 +75,7 @@ export default function DashPosts() {
               <Table.HeadCell>Post title</Table.HeadCell>
               <Table.HeadCell>Category</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
-              <Table.HeadCell>
-                <span>Edit</span>
-              </Table.HeadCell>
+              <Table.HeadCell>Edit</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {userPosts.map((post) => (
@@ -85,8 +83,6 @@ export default function DashPosts() {
                   key={post._id} // Add a unique key to each Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Body className="divide-y">
-                    <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                       <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
                       <Table.Cell>
                         <Link to={`/post/${post.slug}`}>
@@ -112,11 +108,9 @@ export default function DashPosts() {
                       </Table.Cell>
                       <Table.Cell>
                         <Link className="text-teal-500 hover:underline" to={`/update-post/${post._id}`}>
-                          <span>Edit</span>
+                          Edit
                         </Link>
                       </Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
                 </Table.Row>
               ))}
             </Table.Body>
