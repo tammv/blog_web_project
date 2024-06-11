@@ -4,7 +4,8 @@ import {
   getAllPayments,
   getPaymentById,
   updatePaymentById,
-  deletePaymentById
+  deletePaymentById,
+  createPaymentWithLink
 } from '../controllers/payment.controller.js';
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get('/', getAllPayments);
 router.get('/:id', getPaymentById);
 router.put('/:id', updatePaymentById);
 router.delete('/:id', deletePaymentById);
+router.post('/newPayment', createPaymentWithLink); 
 
 export default router;

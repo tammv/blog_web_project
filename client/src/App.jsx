@@ -14,6 +14,7 @@ import UpdatePost from "./pages/UpdatePost";
 import PostPage from "./pages/PostPage";
 import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
+import PaymentPage from "./pages/Payment";
 
 export default function App() {
   return (
@@ -27,10 +28,12 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/post/:postSlug" element={<PostPage />} />
-        <Route path="/create-post" element={<CreatePost />} />
-        <Route path="/update-post/:postId" element={<UpdatePost />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        {/* <Route element={<PrivateRoute />}></Route> */}
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/update-post/:postId" element={<UpdatePost />} />
+        </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/dashboardadmin" element={<DashboardAdmin />} />
         </Route>

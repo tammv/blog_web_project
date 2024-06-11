@@ -1,4 +1,51 @@
 import Payment from '../models/payment.model.js';
+import PayOS from "@payos/node";
+import dotenv from "dotenv";
+dotenv.config();
+const payOS = new PayOS(process.env.PAYOS_CLIENT_ID, process.env.PAYOS_API_KEY, process.env.PAYOS_CHECKSUM_KEY);
+
+// Create a new payment with payment link
+export const createPaymentWithLink = async (req, res) => {
+    const { userID, orderCode, amount, description, returnUrl, cancelUrl } = req.body;
+
+    // Prepare payment body
+    const body = {
+        orderCode,
+        amount,
+        description,
+        returnUrl,
+        cancelUrl
+    };
+
+    try {
+        console.log(req.body);
+        // Create payment link
+        const paymentLinkResponse = await payOS.createPaymentLink(body);
+        console.log(paymentLinkResponse);
+
+        // Save payment details to database
+        console.log("HI");
+        // Get current date in YYYY-MM-DD format
+        const today = new Date();
+        const dateOfPayment = today.toISOString().split('T')[0];
+        console.log(dateOfPayment);
+
+        const newPayment = new Payment({ 
+            paymentId: paymentLinkResponse.orderCode, 
+            isStatus: false,
+            dateOfPayment: dateOfPayment,
+            description: paymentLinkResponse.description,
+            price: paymentLinkResponse.amount,
+            userId: userID
+        });
+        const savedPayment = await newPayment.save();
+        console.log(savedPayment);
+        res.status(201).json(paymentLinkResponse);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 
 // Create a new payment
 export const createPayment = async (req, res) => {
