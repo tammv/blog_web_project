@@ -26,37 +26,56 @@ export const create = async (req, res, next) => {
   }
 };
 
-export const getposts = async (req, res, next) => {
+export const getPosts = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === "asc" ? 1 : -1;
-    const posts = await Post.find({
-      ...(req.query.userId && { userId: req.query.userId }),
-      ...(req.query.topicID && { topicID: req.query.topicID }),
-      ...(req.query.category && { category: req.query.category }),
-      ...(req.query.slug && { slug: req.query.slug }),
-      ...(req.query.postId && { _id: req.query.postId }),
-      ...(req.query.searchTerm && {
-        $or: [
-          { title: { $regex: req.query.searchTerm, $options: "i" } },
-          { content: { $regex: req.query.searchTerm, $options: "i" } },
-        ],
-      }),
-    })
+
+    const queryOptions = {};
+
+    if (req.query.userId) {
+      queryOptions.userId = req.query.userId;
+    }
+    if (req.query.topicID) {
+      queryOptions.topicID = req.query.topicID;
+    }
+    if (req.query.category) {
+      queryOptions.category = req.query.category;
+    }
+    if (req.query.slug) {
+      queryOptions.slug = req.query.slug;
+    }
+    if (req.query.postId) {
+      queryOptions._id = req.query.postId;
+    }
+    if (req.query.searchTerm) {
+      queryOptions.$or = [
+        { title: { $regex: req.query.searchTerm, $options: "i" } },
+        { content: { $regex: req.query.searchTerm, $options: "i" } },
+      ];
+    }
+    const postsQuery = Post.find(queryOptions)
+      .populate("topicID") // Populate the 'topicID' field with the corresponding topic document
       .sort({ updatedAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
 
-    const totalPosts = await Post.countDocuments();
+    const totalPostsQuery = Post.countDocuments(queryOptions);
 
     const now = new Date();
-
     const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
 
-    const lastMonthPosts = await Post.countDocuments({
+    const lastMonthPostsQuery = Post.countDocuments({
       createdAt: { $gte: oneMonthAgo },
+      ...queryOptions, // Include other query options
     });
+
+    const [posts, totalPosts, lastMonthPosts] = await Promise.all([
+      postsQuery.exec(),
+      totalPostsQuery.exec(),
+      lastMonthPostsQuery.exec(),
+    ]);
 
     res.status(200).json({
       posts,
@@ -69,7 +88,7 @@ export const getposts = async (req, res, next) => {
 };
 
 export const deletepost = async (req, res, next) => {
-  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+  if (req.user.id !== req.params.userId) {
     return next(errorHandler(403, "You are not allowed to delete this post"));
   }
   try {
@@ -81,7 +100,7 @@ export const deletepost = async (req, res, next) => {
 };
 
 export const updatepost = async (req, res, next) => {
-  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+  if (req.user.id !== req.params.userId) {
     return next(errorHandler(403, "You are not allowed to update this post"));
   }
   try {

@@ -27,6 +27,7 @@ const postSchema = new mongoose.Schema(
     },
     topicID: {
       type: String,
+      ref: "Topic",
       required: true,
       validate: {
         validator: function (v) {
