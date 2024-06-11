@@ -31,16 +31,6 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/post/:postSlug" element={<PostPage />} />
-<<<<<<< Updated upstream
-        <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/update-post/:postId" element={<UpdatePost />} />
-        </Route>
-        <Route element={<OnlyAdminPrivateRoute />}>
-          <Route path="/dashboardadmin" element={<DashboardAdmin />} />
-        </Route>
-=======
         <Route path="/payment" element={<PaymentPage />} />
         {currentUser && currentUser.isAdmin ? (
           <Route element={<OnlyAdminPrivateRoute />}>
@@ -53,7 +43,6 @@ export default function App() {
             <Route path="/update-post/:postId" element={<UpdatePost />} />
           </Route>
         )}
->>>>>>> Stashed changes
       </Routes>
       <Footer />
     </BrowserRouter>
