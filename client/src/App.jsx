@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import SignIn from "./pages/SignIn";
@@ -16,6 +17,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
 
 export default function App() {
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -27,6 +30,7 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/post/:postSlug" element={<PostPage />} />
+<<<<<<< Updated upstream
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-post" element={<CreatePost />} />
@@ -35,6 +39,20 @@ export default function App() {
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/dashboardadmin" element={<DashboardAdmin />} />
         </Route>
+=======
+        <Route path="/payment" element={<PaymentPage />} />
+        {currentUser && currentUser.isAdmin ? (
+          <Route element={<OnlyAdminPrivateRoute />}>
+            <Route path="/dashboardadmin" element={<DashboardAdmin />} />
+          </Route>
+        ) : (
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/update-post/:postId" element={<UpdatePost />} />
+          </Route>
+        )}
+>>>>>>> Stashed changes
       </Routes>
       <Footer />
     </BrowserRouter>
