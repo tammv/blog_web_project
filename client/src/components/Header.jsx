@@ -57,11 +57,11 @@ export default function Header() {
               <span className="block text-sm">@{currentUser.username}</span>
               <span className="block text-sm font-medium truncate">@{currentUser.email}</span>
             </Dropdown.Header>
-            <Link to={"/dashboard?tab=profile"}>
+            <Link to={currentUser.isAdmin ? "/dashboardadmin?tab=profile" : "/dashboard?tab=profile"}>
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
 
-            <Link to={"/dashboard?tab=profile"}>
+            <Link to={currentUser.isAdmin ? "/dashboardadmin?tab=profile" : "/dashboard?tab=profile"}>
               <Dropdown.Item>Upgrade Account</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
