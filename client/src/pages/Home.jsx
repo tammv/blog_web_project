@@ -66,7 +66,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section >
+      </section>
 
       <section className="py-10 bg-gray-50 sm:py-16 lg:py-24 dark:bg-gray-800">
         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
@@ -277,6 +277,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div >
+    </div>
   );
 }
