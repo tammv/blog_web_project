@@ -15,14 +15,16 @@ export default function UpdatePost() {
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
+  const [topics, setTopics] = useState([]); // State to hold all topics
   const { postId } = useParams();
 
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
 
+  // Fetch the post details to update
   useEffect(() => {
-    try {
-      const fetchPost = async () => {
+    const fetchPost = async () => {
+      try {
         const res = await fetch(`/api/post/getposts?postId=${postId}`);
         const data = await res.json();
         if (!res.ok) {
@@ -34,14 +36,34 @@ export default function UpdatePost() {
           setPublishError(null);
           setFormData(data.posts[0]);
         }
-      };
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
-      fetchPost();
-    } catch (error) {
-      console.log(error.message);
-    }
+    fetchPost();
   }, [postId]);
 
+  // Fetch all topics to populate the dropdown
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const res = await fetch("/api/topics"); // Adjust the endpoint as necessary
+        const data = await res.json();
+        if (res.ok) {
+          setTopics(data);
+        } else {
+          console.error(data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching topics:", error);
+      }
+    };
+
+    fetchTopics();
+  }, []);
+
+  // Handle image upload to Firebase
   const handleUpdloadImage = async () => {
     try {
       if (!file) {
@@ -77,6 +99,8 @@ export default function UpdatePost() {
       console.log(error);
     }
   };
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -101,9 +125,10 @@ export default function UpdatePost() {
       setPublishError("Something went wrong");
     }
   };
+
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-      <h1 className="text-center text-3xl my-7 font-semibold">Update post</h1>
+      <h1 className="text-center text-3xl my-7 font-semibold">Update Post</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
@@ -115,11 +140,17 @@ export default function UpdatePost() {
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             value={formData.title}
           />
-          <Select onChange={(e) => setFormData({ ...formData, category: e.target.value })} value={formData.category}>
-            <option value="uncategorized">Select a category</option>
-            <option value="javascript">JavaScript</option>
-            <option value="reactjs">React.js</option>
-            <option value="nextjs">Next.js</option>
+          <Select onChange={(e) => setFormData({ ...formData, topicID: e.target.value })}>
+            <option value="">Select a Topic</option>
+            <option value="665ec007773530163eb06766">JavaScript</option>
+            <option value="665ec0a7773530163eb06768">React.js</option>
+            <option value="665ec140773530163eb0676a">NodeJS</option>
+            <option value="665ec155773530163eb0676c">Mobile</option>
+            <option value="665ec16c773530163eb0676e">WEB</option>
+            <option value="665ec183773530163eb06770">SQL</option>
+            <option value="665ec19f773530163eb06772">MySQL</option>
+            <option value="665ec1b6773530163eb06774">Techs News</option>
+            <option value="665ec1d1773530163eb06776">Life Style</option>
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
@@ -154,7 +185,7 @@ export default function UpdatePost() {
           }}
         />
         <Button type="submit" gradientDuoTone="purpleToPink">
-          Update post
+          Update Post
         </Button>
         {publishError && (
           <Alert className="mt-5" color="failure">

@@ -93,7 +93,7 @@ export default function CreatePost() {
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           />
           <Select onChange={(e) => setFormData({ ...formData, topicID: e.target.value })}>
-            <option value="">Select a category</option>
+            <option value="">Select a Topic</option>
             <option value="665ec007773530163eb06766">JavaScript</option>
             <option value="665ec0a7773530163eb06768">React.js</option>
             <option value="665ec140773530163eb0676a">NodeJS</option>
