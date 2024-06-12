@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +15,26 @@ export default function CreatePost() {
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
   const [darkMode] = useState(false);
+  const [topic, setTopic] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTopic = async () => {
+      try {
+        const res = await fetch(`/api/topic`);
+        const data = await res.json();
+        if(res.ok){
+          setTopic(data);
+        }else{
+          return;
+        }
+      } catch (error) {
+        return error;
+      }
+    };
+    fetchTopic();
+  }, []);
 
   const handleUploadImage = async () => {
     try {
@@ -94,15 +112,7 @@ export default function CreatePost() {
           />
           <Select onChange={(e) => setFormData({ ...formData, topicID: e.target.value })}>
             <option value="">Select a Topic</option>
-            <option value="665ec007773530163eb06766">JavaScript</option>
-            <option value="665ec0a7773530163eb06768">React.js</option>
-            <option value="665ec140773530163eb0676a">NodeJS</option>
-            <option value="665ec155773530163eb0676c">Mobile</option>
-            <option value="665ec16c773530163eb0676e">WEB</option>
-            <option value="665ec183773530163eb06770">SQL</option>
-            <option value="665ec19f773530163eb06772">MySQL</option>
-            <option value="665ec1b6773530163eb06774">Techs News</option>
-            <option value="665ec1d1773530163eb06776">Life Style</option>
+            {topic && topic.map((topic) => <option key={topic._id} value={topic._id}> {topic.nameOfTopic} </option>)}
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">

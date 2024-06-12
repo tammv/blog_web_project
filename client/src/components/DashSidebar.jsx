@@ -39,7 +39,7 @@ export default function DashSidebar() {
   };
 
   return (
-    <Sidebar className="w-full md:w-56">
+    <Sidebar className="w-full md:w-60">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
           {currentUser && currentUser.isAdmin ? (
@@ -70,7 +70,7 @@ export default function DashSidebar() {
             <Sidebar.Item
               active={tab === "profile"}
               icon={HiUser}
-              label={currentUser.isAdmin ? "Admin" : "User"}
+              label={currentUser.isAdmin ? "Admin" : currentUser.isPremium ? "User Premium" : "User"}
               labelColor="dark"
               as="div"
             >
