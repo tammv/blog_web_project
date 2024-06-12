@@ -12,6 +12,10 @@ export default function DashUsers() {
   const [userIdToDelete, setUserIdToDelete] = useState('');
   const [userIdToUpdate, setUserIdToUpdate] = useState('');
   const [updateType, setUpdateType] = useState('');
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [message, setMessage] = useState('');
+  const [userIdToBan, setUserIdToBan] = useState('');
+  const [banAction, setBanAction] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -68,13 +72,13 @@ export default function DashUsers() {
 
   const handleUpdateUserToAdmin = async () => {
     try {
-      const res = await fetch(`/api/user/${userIdToUpdate}/admin`, { 
+      const res = await fetch(`/api/user/${userIdToUpdate}/admin`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (res.headers.get('content-type')?.includes('application/json')) {
         const data = await res.json();
         if (res.ok) {
@@ -95,48 +99,22 @@ export default function DashUsers() {
     }
   };
 
-  const handleBanUser = async () => {
+  const handleBanUnbanUser = async () => {
     try {
-      const res = await fetch(`/api/user/ban/${userIdToUpdate}`, {
+      const res = await fetch(`/api/user/${banAction}/${userIdToBan}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
       const data = await res.json();
       if (res.ok) {
         setUsers((prev) =>
           prev.map((user) =>
-            user._id === userIdToUpdate ? { ...user, isBan: true } : user
+            user._id === userIdToBan ? { ...user, isBan: banAction === 'ban' } : user
           )
         );
         setShowModal(false);
       } else {
-        console.log(data.message);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const handleUnbanUser = async () => {
-    try {
-      const res = await fetch(`/api/user/unban/${userIdToUpdate}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setUsers((prev) =>
-          prev.map((user) =>
-            user._id === userIdToUpdate ? { ...user, isBan: false } : user
-          )
-        );
-        setShowModal(false);
-      } else {
-        console.log(data.message);
+        setMessage(data.message);
+        setShowMessageModal(true);
       }
     } catch (error) {
       console.log(error.message);
@@ -198,9 +176,14 @@ export default function DashUsers() {
                     {user.isBan ? (
                       <span
                         onClick={() => {
-                          setShowModal(true);
-                          setUserIdToUpdate(user._id);
-                          setUpdateType('unban');
+                          if (user.isAdmin) {
+                            setMessage('Không thể ban Admin');
+                            setShowMessageModal(true);
+                          } else {
+                            setShowModal(true);
+                            setUserIdToBan(user._id);
+                            setBanAction('unban');
+                          }
                         }}
                         className='font-medium text-green-500 hover:underline cursor-pointer'
                       >
@@ -209,9 +192,14 @@ export default function DashUsers() {
                     ) : (
                       <span
                         onClick={() => {
-                          setShowModal(true);
-                          setUserIdToUpdate(user._id);
-                          setUpdateType('ban');
+                          if (user.isAdmin) {
+                            setMessage('Không thể ban admin');
+                            setShowMessageModal(true);
+                          } else {
+                            setShowModal(true);
+                            setUserIdToBan(user._id);
+                            setBanAction('ban');
+                          }
                         }}
                         className='font-medium text-red-500 hover:underline cursor-pointer'
                       >
@@ -222,9 +210,14 @@ export default function DashUsers() {
                   <Table.Cell>
                     <span
                       onClick={() => {
-                        setShowModal(true);
-                        setUserIdToDelete(user._id);
-                        setUpdateType('delete');
+                        if (user.isAdmin) {
+                          setMessage('Không thể delete Admin');
+                          setShowMessageModal(true);
+                        } else {
+                          setShowModal(true);
+                          setUserIdToDelete(user._id);
+                          setUpdateType('delete');
+                        }
                       }}
                       className='font-medium text-red-500 hover:underline cursor-pointer'
                     >
@@ -258,33 +251,42 @@ export default function DashUsers() {
           <div className='text-center'>
             <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
             <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
-              {`Are you sure you want to ${
-                updateType === 'admin'
-                  ? 'promote this user to admin'
-                  : updateType === 'ban'
-                  ? 'ban this user'
-                  : updateType === 'unban'
-                  ? 'unban this user'
-                  : 'delete this user'
-              }?`}
+              {banAction ? `Are you sure you want to ${banAction} this user?` : 'Are you sure you want to delete this user?'}
             </h3>
             <div className='flex justify-center gap-4'>
-              <Button
-                color='failure'
-                onClick={
-                  updateType === 'admin'
-                    ? handleUpdateUserToAdmin
-                    : updateType === 'ban'
-                    ? handleBanUser
-                    : updateType === 'unban'
-                    ? handleUnbanUser
-                    : handleDeleteUser
-                }
-              >
-                Yes, I'm sure
-              </Button>
+              {banAction ? (
+                <Button color='failure' onClick={handleBanUnbanUser}>
+                  Yes, I'm sure
+                </Button>
+              ) : (
+                <Button color='failure' onClick={handleDeleteUser}>
+                  Yes, I'm sure
+                </Button>
+              )}
               <Button color='gray' onClick={() => setShowModal(false)}>
                 No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showMessageModal}
+        onClose={() => setShowMessageModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              {message}
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='gray' onClick={() => setShowMessageModal(false)}>
+                Ok
               </Button>
             </div>
           </div>
