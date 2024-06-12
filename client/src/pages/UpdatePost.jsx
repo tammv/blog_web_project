@@ -1,4 +1,4 @@
-import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
+import { Alert, Button, FileInput, TextInput } from "flowbite-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
@@ -29,12 +29,14 @@ export default function UpdatePost() {
         const data = await res.json();
         if (!res.ok) {
           console.log(data.message);
-          setPublishError(data.message);
           return;
         }
         if (res.ok) {
-          setPublishError(null);
-          setFormData(data.posts[0]);
+          const post = data.posts[0];
+          setFormData({
+            ...post,
+            topic: post.topicID ? post.topicID.nameOfTopic : "", // Set the topic name
+          });
         }
       } catch (error) {
         console.log(error.message);
@@ -48,7 +50,7 @@ export default function UpdatePost() {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const res = await fetch("/api/topics"); // Adjust the endpoint as necessary
+        const res = await fetch("/api/topic"); // Adjust the endpoint as necessary
         const data = await res.json();
         if (res.ok) {
           setTopics(data);
@@ -64,7 +66,7 @@ export default function UpdatePost() {
   }, []);
 
   // Handle image upload to Firebase
-  const handleUpdloadImage = async () => {
+  const handleUploadImage = async () => {
     try {
       if (!file) {
         setImageUploadError("Please select an image");
@@ -140,18 +142,16 @@ export default function UpdatePost() {
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             value={formData.title}
           />
-          <Select onChange={(e) => setFormData({ ...formData, topicID: e.target.value })}>
-            <option value="">Select a Topic</option>
-            <option value="665ec007773530163eb06766">JavaScript</option>
-            <option value="665ec0a7773530163eb06768">React.js</option>
-            <option value="665ec140773530163eb0676a">NodeJS</option>
-            <option value="665ec155773530163eb0676c">Mobile</option>
-            <option value="665ec16c773530163eb0676e">WEB</option>
-            <option value="665ec183773530163eb06770">SQL</option>
-            <option value="665ec19f773530163eb06772">MySQL</option>
-            <option value="665ec1b6773530163eb06774">Techs News</option>
-            <option value="665ec1d1773530163eb06776">Life Style</option>
-          </Select>
+          <select onChange={(e) => setFormData({ ...formData, topic: e.target.value })} value={formData.topic || ""}>
+            <option value={formData.topic} disabled={!formData.topic}>
+              {formData.topic}
+            </option>
+            {topics.map((topic) => (
+              <option key={topic._id} value={topic.nameOfTopic}>
+                {topic.nameOfTopic}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
           <FileInput type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} />
@@ -160,7 +160,7 @@ export default function UpdatePost() {
             gradientDuoTone="purpleToBlue"
             size="sm"
             outline
-            onClick={handleUpdloadImage}
+            onClick={handleUploadImage}
             disabled={imageUploadProgress}
           >
             {imageUploadProgress ? (

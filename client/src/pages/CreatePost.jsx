@@ -15,25 +15,27 @@ export default function CreatePost() {
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
   const [darkMode] = useState(false);
-  const [topic, setTopic] = useState(null);
+  const [topics, setTopics] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTopic = async () => {
+    const fetchTopics = async () => {
       try {
-        const res = await fetch(`/api/topic`);
+        const res = await fetch("/api/topic");
         const data = await res.json();
-        if(res.ok){
-          setTopic(data);
-        }else{
-          return;
+        if (res.ok) {
+          setTopics(data);
+        } else {
+          console.error(data.message);
         }
       } catch (error) {
-        return error;
+        console.error("Error fetching topics:", error);
       }
     };
-    fetchTopic();
+
+    fetchTopics();
   }, []);
 
   const handleUploadImage = async () => {
@@ -110,9 +112,21 @@ export default function CreatePost() {
             className="flex-1"
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           />
-          <Select onChange={(e) => setFormData({ ...formData, topicID: e.target.value })}>
-            <option value="">Select a Topic</option>
-            {topic && topic.map((topic) => <option key={topic._id} value={topic._id}> {topic.nameOfTopic} </option>)}
+          <Select
+            onChange={(e) => {
+              setFormData({ ...formData, topicID: e.target.value });
+              setSelectedTopic(e.target.value); // Update the selected topic
+            }}
+            value={selectedTopic}
+          >
+            <option value="" disabled>
+              Select a Topic
+            </option>
+            {topics.map((topic) => (
+              <option key={topic._id} value={topic._id}>
+                {topic.nameOfTopic}
+              </option>
+            ))}
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
