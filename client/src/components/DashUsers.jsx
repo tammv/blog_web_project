@@ -95,6 +95,54 @@ export default function DashUsers() {
     }
   };
 
+  const handleBanUser = async () => {
+    try {
+      const res = await fetch(`/api/user/ban/${userIdToUpdate}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers((prev) =>
+          prev.map((user) =>
+            user._id === userIdToUpdate ? { ...user, isBan: true } : user
+          )
+        );
+        setShowModal(false);
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleUnbanUser = async () => {
+    try {
+      const res = await fetch(`/api/user/unban/${userIdToUpdate}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers((prev) =>
+          prev.map((user) =>
+            user._id === userIdToUpdate ? { ...user, isBan: false } : user
+          )
+        );
+        setShowModal(false);
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
       {currentUser.isAdmin && users.length > 0 ? (
@@ -107,6 +155,7 @@ export default function DashUsers() {
               <Table.HeadCell>Email</Table.HeadCell>
               <Table.HeadCell>Admin</Table.HeadCell>
               <Table.HeadCell>Promote</Table.HeadCell>
+              <Table.HeadCell>Block</Table.HeadCell>
               <Table.HeadCell>Actions</Table.HeadCell>
             </Table.Head>
             {users.map((user) => (
@@ -142,6 +191,31 @@ export default function DashUsers() {
                         className='font-medium text-blue-500 hover:underline cursor-pointer'
                       >
                         Make Admin
+                      </span>
+                    )}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {user.isBan ? (
+                      <span
+                        onClick={() => {
+                          setShowModal(true);
+                          setUserIdToUpdate(user._id);
+                          setUpdateType('unban');
+                        }}
+                        className='font-medium text-green-500 hover:underline cursor-pointer'
+                      >
+                        Unban
+                      </span>
+                    ) : (
+                      <span
+                        onClick={() => {
+                          setShowModal(true);
+                          setUserIdToUpdate(user._id);
+                          setUpdateType('ban');
+                        }}
+                        className='font-medium text-red-500 hover:underline cursor-pointer'
+                      >
+                        Ban
                       </span>
                     )}
                   </Table.Cell>
@@ -187,6 +261,10 @@ export default function DashUsers() {
               {`Are you sure you want to ${
                 updateType === 'admin'
                   ? 'promote this user to admin'
+                  : updateType === 'ban'
+                  ? 'ban this user'
+                  : updateType === 'unban'
+                  ? 'unban this user'
                   : 'delete this user'
               }?`}
             </h3>
@@ -196,6 +274,10 @@ export default function DashUsers() {
                 onClick={
                   updateType === 'admin'
                     ? handleUpdateUserToAdmin
+                    : updateType === 'ban'
+                    ? handleBanUser
+                    : updateType === 'unban'
+                    ? handleUnbanUser
                     : handleDeleteUser
                 }
               >
