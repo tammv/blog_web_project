@@ -6,7 +6,9 @@ import {
   signout,
   test,
   updateUser,
-  makeAdmin
+  makeAdmin,
+  banUser,
+  unbanUser
 } from '../controllers/user.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
 
@@ -19,6 +21,8 @@ router.post('/signout', signout);
 router.get('/getusers', verifyToken, getUsers);
 router.get('/:userId', getUser);
 router.put('/:userId/admin', verifyToken, makeAdmin);
+router.put('/ban/:userId', verifyToken, banUser);
+router.put('/unban/:userId', verifyToken, unbanUser);
 
 
 export default router;
