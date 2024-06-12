@@ -42,6 +42,9 @@ export const signin = async (req, res, next) => {
     if (!validPassword) {
       return next(errorHandler(400, "Invalid password"));
     }
+    if(validUser.isBan){
+      return next(errorHandler(401, "Your account has been locked due to violating the blog's terms"));
+    }
     const token = jwt.sign({ id: validUser._id, isAdmin: validUser.isAdmin }, process.env.JWT_SECRET);
 
     const { password: pass, ...rest } = validUser._doc;
@@ -62,6 +65,9 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
+      if(user.isBan){
+        return next(errorHandler(401, "Your account has been locked due to violating the blog's terms"));
+      }
       const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
       const { password, ...rest } = user._doc;
       res

@@ -58,11 +58,7 @@ export default function Header() {
               <span className="block text-sm font-medium truncate">@{currentUser.email}</span>
             </Dropdown.Header>
             <Link to={currentUser.isAdmin ? "/dashboardadmin?tab=profile" : "/dashboard?tab=profile"}>
-              <Dropdown.Item>Profile</Dropdown.Item>
-            </Link>
-
-            <Link to={currentUser.isAdmin ? "/dashboardadmin?tab=profile" : "/dashboard?tab=profile"}>
-              <Dropdown.Item>Upgrade Account</Dropdown.Item>
+              {currentUser.isAdmin ? <Dropdown.Item>Dashboard</Dropdown.Item> : <Dropdown.Item>Setting</Dropdown.Item>}
             </Link>
             <Dropdown.Divider />
             <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
@@ -86,7 +82,7 @@ export default function Header() {
         <Navbar.Link active={path === "/blogs"} as={"div"}>
           <Link to="/blogs">Blogs</Link>
         </Navbar.Link>
-        {currentUser && (
+        {currentUser && !currentUser.isAdmin && (
           <Navbar.Link active={path === "/payment"} as={"div"}>
             <Link to="/payment">Payment</Link>
           </Navbar.Link>

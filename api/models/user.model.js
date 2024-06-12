@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
     },
     dateOfPre:{
         type: Date
+    },
+    isBan:{
+        type: Boolean,
+        default: false
     }
 },{timestamps: true});
 
