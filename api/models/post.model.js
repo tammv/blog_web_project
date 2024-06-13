@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const postSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: false,
     },
     title: {

@@ -14,7 +14,7 @@ export const createReport = async (req, res) => {
 // Get all reports
 export const getAllReports = async (req, res) => {
   try {
-    const reports = await Report.find();
+    const reports = await Report.find().populate("postId");
     res.status(200).json(reports);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -49,7 +49,9 @@ export const updateReportById = async (req, res) => {
 
 // Delete a report by ID
 export const deleteReportById = async (req, res) => {
+  console.log("Here");
   try {
+    console.log(req.params.id);
     const deletedReport = await Report.findByIdAndDelete(req.params.id);
     if (!deletedReport) {
       return res.status(404).json({ message: 'Report not found' });

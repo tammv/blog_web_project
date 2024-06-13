@@ -57,6 +57,7 @@ export const getPosts = async (req, res, next) => {
     }
     const postsQuery = Post.find(queryOptions)
       .populate("topicID") // Populate the 'topicID' field with the corresponding topic document
+      .populate("userId", "username email") // Populate the 'userId' field with 'username' and 'email'
       .sort({ updatedAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
