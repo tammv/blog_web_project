@@ -30,8 +30,6 @@ export default function DashSidebar() {
         console.log(data.message);
       } else {
         dispatch(signoutSuccess());
-
-        window.location.href = "/sign-in";
       }
     } catch (error) {
       console.log(error.message);
