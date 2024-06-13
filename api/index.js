@@ -9,6 +9,7 @@ import commentRoutes from "./routes/comment.route.js";
 import topicRoutes from "./routes/topic.route.js";
 import reportRoutes from "./routes/report.route.js";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 dotenv.config();
 
@@ -46,4 +47,13 @@ app.use((err, req, res, next) => {
     statusCode,
     message,
   });
+});
+
+// Config server
+const __dirname = path.resolve();
+
+app.use(express.static(path.join(__dirname, 'client', 'dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist'));
 });
