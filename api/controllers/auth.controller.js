@@ -1,10 +1,12 @@
 import User from "../models/user.model.js";
+import Otp from "../models/otp.model.js"
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
-import {validPassword, validEmail} from "../utils/validate.js"
+import {validPassword, validEmail} from "../utils/validate.js";
+import sendEmail from "../utils/sendmail.js";
 
-export const signup = async (req, res, next) => {
+export const verifyemail = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password || username === "" || email === "" || password === "") {
@@ -20,6 +22,67 @@ export const signup = async (req, res, next) => {
       next(errorHandler(400, 'Invalid email'));
   }
 
+  try {
+    const validEmail = await User.findOne({ email });
+    const validUser = await User.findOne({ username });
+    if(validEmail) {
+      return next(errorHandler(400, "Email had been registered"));
+    }
+    if(validUser){
+      return next(errorHandler(400, "Username had been registered"));
+    }
+
+    let otp = Math.floor(100000 + Math.random()*900000);
+    console.log(otp.toString());
+
+    await sendEmail({to: [email], subject: 'OTP', html: otp.toString()});
+    
+    const hashedOtp = bcryptjs.hashSync(otp.toString(), 10);
+
+    const verifyOtp = await Otp.findOne({email});
+
+    if(verifyOtp){
+      await Otp.findByIdAndDelete(verifyOtp._id);
+    }
+    
+    const newOtp = new Otp({
+      email: email,
+      otp: hashedOtp,
+    });
+  
+    await newOtp.save();
+    res.json("OTP sent successfully!");
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const signup = async (req, res, next) => {
+  const { username, email, password, verify } = req.body;
+
+  if (!username || !email || !password || username === "" || email === "" || password === "") {
+    return next(errorHandler(400, "All fields are required"));
+  }
+
+  if(!validPassword.test(password)){
+    return next(errorHandler(400, 'Password must minimum six characters, at least one letter, one number'));
+  }
+
+  if(!validEmail.test(email)){
+    return  next(errorHandler(400, 'Invalid email'));
+  }
+
+  const verifyOtp = await Otp.findOne({email});
+
+  const validOtp = bcryptjs.compareSync(verify, verifyOtp.otp);
+
+  await Otp.findByIdAndDelete(verifyOtp._id);
+  
+    if(!validOtp){
+    return next(errorHandler(400, 'OTP not correct'));
+  }
+  
   const hashedPassword = bcryptjs.hashSync(password, 10);
 
   const newUser = new User({
