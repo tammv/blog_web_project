@@ -9,31 +9,33 @@ export default function Home() {
   return (
     <div>
       <div>
-        <section className="bg-[#FCF8F1] bg-opacity-30 py-10 sm:py-16 lg:py-24 dark:bg-gray-900">
-          <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
-              <div>
-                <p className="text-base font-semibold tracking-wider text-blue-600 uppercase dark:text-blue-400">
-                  A Tech Blog for Knowledge Sharing
-                </p>
-                <h1 className="mt-4 text-4xl font-bold text-black lg:mt-8 sm:text-6xl xl:text-8xl dark:text-white">
-                  Connect & Learn from the Experts
-                </h1>
-                <p className="mt-4 text-base text-black lg:mt-8 sm:text-xl dark:text-gray-300">
-                  Accelerate your career growth with insights from industry leaders. Join a community where technology
-                  enthusiasts share their knowledge, experiences, and innovations.
-                </p>
-              </div>
-              <div>
-                <img
-                  className="w-full"
-                  src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/1/hero-img.png"
-                  alt=""
-                />
+        {currentUser && currentUser.isAdmin && (
+          <section className="bg-[#FCF8F1] bg-opacity-30 py-10 sm:py-16 lg:py-24 dark:bg-gray-900">
+            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+              <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
+                <div>
+                  <p className="text-base font-semibold tracking-wider text-blue-600 uppercase dark:text-blue-400">
+                    A Tech Blog for Knowledge Sharing
+                  </p>
+                  <h1 className="mt-4 text-4xl font-bold text-black lg:mt-8 sm:text-6xl xl:text-8xl dark:text-white">
+                    Connect & Learn from the Experts
+                  </h1>
+                  <p className="mt-4 text-base text-black lg:mt-8 sm:text-xl dark:text-gray-300">
+                    Accelerate your career growth with insights from industry leaders. Join a community where technology
+                    enthusiasts share their knowledge, experiences, and innovations.
+                  </p>
+                </div>
+                <div>
+                  <img
+                    className="w-full"
+                    src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/1/hero-img.png"
+                    alt=""
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </div>
       <div>
         {currentUser && !currentUser.isAdmin && (

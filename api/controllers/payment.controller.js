@@ -23,8 +23,6 @@ export const createPaymentWithLink = async (req, res) => {
         const paymentLinkResponse = await payOS.createPaymentLink(body);
         console.log(paymentLinkResponse);
 
-        // Save payment details to database
-        console.log("HI");
         // Get current date in YYYY-MM-DD format
         const today = new Date();
         const dateOfPayment = today.toISOString().split('T')[0];

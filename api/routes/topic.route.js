@@ -5,6 +5,7 @@ import {
   getTopicById,
   updateTopicById,
   deleteTopicById,
+  addUserToTopic
 } from "../controllers/topic.controller.js";
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.post("/create", createTopic);
 router.get("/:id", getTopicById);
 router.put("/:id", updateTopicById);
 router.delete("/:id", deleteTopicById);
+router.post("/:id/addUser", addUserToTopic);
 
 export default router;
