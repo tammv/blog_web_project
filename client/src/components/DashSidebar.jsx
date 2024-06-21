@@ -67,6 +67,11 @@ export default function DashSidebar() {
                   Reports
                 </Sidebar.Item>
               </Link>
+              <Link to="/dashboardadmin?tab=topic">
+                <Sidebar.Item active={tab === "topic"} icon={HiAnnotation} as="div">
+                  Topics
+                </Sidebar.Item>
+              </Link>
             </>
           ) : (
           <Link to="/dashboard?tab=profile">
