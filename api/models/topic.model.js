@@ -11,6 +11,11 @@ const topicSchema = new mongoose.Schema(
       required: false,
       ref: "User",
     },
+    followers: {
+      type: [mongoose.Schema.Types.ObjectId], // Mảng chứa nhiều ObjectId của những người dùng đã follow
+      ref: "User",
+      default: []
+    },
   },
   { timestamps: true }
 );

@@ -59,3 +59,22 @@ export const deleteTopicById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const addUserToTopic = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    console.log(req.body);
+    const topic = await Topic.findById(req.params.id);
+    console.log(topic);
+    if (!topic) {
+      return res.status(404).json({ message: 'Topic not found' });
+    }
+    if (!topic.followers.includes(userId)) {
+      topic.followers.push(userId);
+      await topic.save();
+    }
+    res.status(200).json(topic);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
