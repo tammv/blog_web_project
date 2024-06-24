@@ -14,11 +14,27 @@ export default function DashReports() {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const res = await fetch(`/api/report`);
+        const res = await fetch("/api/report/getall", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const data = await res.json();
-        console.log(data);
         if (res.ok) {
-            setReports(data);
+          // Lấy thông tin người dùng từ userId trong reports
+          const reportsWithUser = await Promise.all(
+            data.map(async (report) => {
+              const userRes = await fetch(`/api/user/${report.userId}`, {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              });
+              const userData = await userRes.json();
+              return { ...report, userName: userData.username };
+            })
+          );
+
+          setReports(reportsWithUser);
           if (data.length < 9) {
             setShowMore(false);
           }
@@ -27,6 +43,7 @@ export default function DashReports() {
         console.log(error.message);
       }
     };
+
     if (currentUser.isAdmin) {
       fetchReports();
     }
@@ -35,10 +52,27 @@ export default function DashReports() {
   const handleShowMore = async () => {
     const startIndex = reports.length;
     try {
-      const res = await fetch(`/api/report/getReports?userId=${currentUser._id}&startIndex=${startIndex}`);
+      const res = await fetch(`/api/report/getReports?userId=${currentUser._id}&startIndex=${startIndex}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await res.json();
       if (res.ok) {
-        setReports((prev) => [...prev, ...data.reports]);
+        // Lấy thông tin người dùng từ userId trong reports
+        const newReports = await Promise.all(
+          data.reports.map(async (report) => {
+            const userRes = await fetch(`/api/user/${report.userId}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const userData = await userRes.json();
+            return { ...report, userName: userData.username };
+          })
+        );
+
+        setReports((prev) => [...prev, ...newReports]);
         if (data.reports.length < 9) {
           setShowMore(false);
         }
@@ -50,10 +84,12 @@ export default function DashReports() {
 
   const handleDeleteReport = async () => {
     setShowModal(false);
-    console.log(reportIdToDelete);
     try {
-      const res = await fetch(`/api/report/deletereport/${reportIdToDelete}`, {
+      const res = await fetch(`/api/report/delete-report/${reportIdToDelete}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       const data = await res.json();
       if (!res.ok) {
@@ -72,22 +108,19 @@ export default function DashReports() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>Post Title</Table.HeadCell>
-              <Table.HeadCell>Description</Table.HeadCell> 
-              <Table.HeadCell>Delete</Table.HeadCell>
+              <Table.HeadCell>Bài viết</Table.HeadCell>
+              <Table.HeadCell>Nội dung báo cáo</Table.HeadCell>
+              <Table.HeadCell>Người báo cáo</Table.HeadCell>
+              <Table.HeadCell>Xóa</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {reports.map((report) => (
-                <Table.Row
-                  key={report._id} // Add a unique key to each Table.Row
-                  className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                >
+                <Table.Row key={report._id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>
-                    <Link to={`/post/${report.postId.slug}`}>
-                        {report.postId.title}
-                    </Link>
+                    <Link to={`/post/${report.postId.slug}`}>{report.postId.title}</Link>
                   </Table.Cell>
                   <Table.Cell>{report.content}</Table.Cell>
+                  <Table.Cell>{report.userName}</Table.Cell> {/* Hiển thị tên người báo cáo */}
                   <Table.Cell>
                     <span
                       onClick={() => {
@@ -96,7 +129,7 @@ export default function DashReports() {
                       }}
                       className="font-medium text-red-500 hover:underline cursor-pointer"
                     >
-                      Delete
+                      Xóa
                     </span>
                   </Table.Cell>
                 </Table.Row>
@@ -105,27 +138,25 @@ export default function DashReports() {
           </Table>
           {showMore && (
             <button onClick={handleShowMore} className="w-full text-teal-500 self-center text-sm py-7">
-              Show more
+              Xem thêm
             </button>
           )}
         </>
       ) : (
-        <p>You have no reports yet!</p>
+        <p>Bạn chưa có báo cáo nào!</p>
       )}
       <Modal show={showModal} onClose={() => setShowModal(false)} popup size="md">
         <Modal.Header />
         <Modal.Body>
           <div className="text-center">
             <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
-            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this report?
-            </h3>
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xóa báo cáo này?</h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={handleDeleteReport}>
-                Yes, I'm sure
+                Có, Tôi chắc chắn
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
-                No, cancel
+                Không, hủy bỏ
               </Button>
             </div>
           </div>
