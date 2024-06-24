@@ -11,16 +11,15 @@ const otpSchema = new mongoose.Schema(
         required: true
     },
     time: {
-        type: Date,
-        default: Date.now,
-        index: { 
-            expires: 30, 
-            unit: 'seconds'
-        }
-    }
+      type: Date,
+      default: Date.now,
+      index: {
+          expires: 60, // Hết hạn sau 60 giây
+          unit: 'seconds'
+      }
+    }  
   }
 );
 
 const Otp = mongoose.model("Otp", otpSchema);
-
 export default Otp;

@@ -1,7 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { PassThrough } from "stream";
-
 dotenv.config();
 
 // Create a transporter using Ethereal email service
@@ -26,7 +25,6 @@ async function sendEmail({to, subject, text = "", html = "", attachments = []}) 
         text: text || 'DevB Blog would like to greet you', 
         html: html || "<b> Good morning, and in case I don't see ya, good afternoon, good evening, and good night. </b>"
     };
-
     console.log(text);
 
     // Add attachments if provided

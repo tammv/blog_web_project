@@ -23,35 +23,43 @@ export const verifyemail = async (req, res, next) => {
   }
 
   try {
-    const validEmail = await User.findOne({ email });
+
     const validUser = await User.findOne({ username });
-    if(validEmail) {
-      return next(errorHandler(400, "Email had been registered"));
-    }
+    const validEmail = await User.findOne({ email });
+    
     if(validUser){
       return next(errorHandler(400, "Username had been registered"));
     }
+    
+    if(validEmail) {
+      return next(errorHandler(400, "Email had been registered"));
+    }
+
 
     let otp = Math.floor(100000 + Math.random()*900000);
     console.log(otp.toString());
 
-    await sendEmail({to: [email], subject: 'OTP', html: otp.toString()});
-    
-    const hashedOtp = bcryptjs.hashSync(otp.toString(), 10);
-
-    const verifyOtp = await Otp.findOne({email});
-
-    if(verifyOtp){
-      await Otp.findByIdAndDelete(verifyOtp._id);
-    }
-    
-    const newOtp = new Otp({
-      email: email,
-      otp: hashedOtp,
-    });
+    try {
+      await sendEmail({to: [email], subject: 'Mã xác thực OTP', html: "<h1>Xác nhận OTP</h1> <p>Xin chào,</p> <p>Mã OTP của bạn là: <strong>"+ otp.toString() + "</strong></p> <p>Vui lòng nhập mã OTP này vào DevB Blog để xác nhận tài khoản của bạn.</p> <p>Mã OTP này chỉ có giá trị trong 1 phút.</p>  <p>Trân trọng,</p>"});
+      
+      const hashedOtp = bcryptjs.hashSync(otp.toString(), 10);
   
-    await newOtp.save();
-    res.json("OTP sent successfully!");
+      const verifyOtp = await Otp.findOne({email});
+      if(verifyOtp){
+        await Otp.findByIdAndDelete(verifyOtp._id);
+      }
+      
+      const newOtp = new Otp({
+        email: email,
+        otp: hashedOtp,
+      });
+    
+      await newOtp.save();
+      res.json("OTP sent successfully!");
+
+    } catch (error) {
+      return next(errorHandler(400, error));
+    }
 
   } catch (error) {
     next(error);
@@ -79,7 +87,7 @@ export const signup = async (req, res, next) => {
 
   await Otp.findByIdAndDelete(verifyOtp._id);
   
-    if(!validOtp){
+  if(!validOtp){
     return next(errorHandler(400, 'OTP not correct'));
   }
   

@@ -13,12 +13,25 @@ export default function SignUp() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
     setErrorMessages(null);
+  };
+
+  const handleBlur = (e) => {
+    setErrorMessages(null);
 
     const validPassword = new RegExp("^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$");
     const validEmail = new RegExp("^[a-zA-Z0-9._:$!%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    const validOtp = new RegExp("/^[0-9]{0,6}$/");
 
-    if(e.target.id === 'username' && !formData.username){
+    if(e.target.id === "username" && (!formData.username || formData.username === "")){
       return setErrorMessages('Please fill out username fields.');
+    }
+
+    if(e.target.id === "email" && (!formData.email || formData.email === "")){
+      return setErrorMessages('Please fill out email fields.');
+    }
+
+    if(e.target.id === "password" && (!formData.password || formData.password === "")){
+      return setErrorMessages('Please fill out password fields.');
     }
 
     if(e.target.id === 'email' && !validEmail.test(formData.email)){
@@ -29,10 +42,10 @@ export default function SignUp() {
       return setErrorMessages('Password must minimum six characters, at least one letter, one number');
     }
 
-    if(e.target.id === 'verify' && !/^[0-9]{0,6}$/.test(formData.verify)){
+    if(e.target.id === 'verify' && !validOtp.test(formData.verify)){
       return setErrorMessages('OTP just enter number');
     }
-  };
+  }
 
   const handleVerifyEmail = async(e) => {
     e.preventDefault();
@@ -60,9 +73,7 @@ export default function SignUp() {
       }
 
       setLoading(false);
-
       if (res.ok) {
-        setLoading(false);
         setOpenModal(true);
       }
       
@@ -88,11 +99,13 @@ export default function SignUp() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
       if (data.success === false) {
         setLoading(false);
         return setErrorMessages(data.message);
       }
+      
       setLoading(false);
       if (res.ok) {
         navigate("/sign-in");
@@ -102,6 +115,7 @@ export default function SignUp() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center dark:bg-gray-900 dark:text-white">
@@ -116,7 +130,7 @@ export default function SignUp() {
           <p className="text-sm mt-5 dark:text-gray-300">You can sign up with your email and password or with Google</p>
         </div>
         <div className="flex-1">
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <form className="flex flex-col gap-4">
             <div className="">
               <Label value="Your username" className="dark:text-gray-200" />
               <TextInput
@@ -124,6 +138,7 @@ export default function SignUp() {
                 placeholder="Username"
                 id="username"
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="dark:bg-gray-800 dark:text-gray-200"
               />
             </div>
@@ -134,6 +149,7 @@ export default function SignUp() {
                 placeholder="email@company.com"
                 id="email"
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="dark:bg-gray-800 dark:text-gray-200"
               />
             </div>
@@ -144,6 +160,7 @@ export default function SignUp() {
                 placeholder="Must minimum 6 characters, least 1 letter, 1 number"
                 id="password"
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="dark:bg-gray-800 dark:text-gray-200"
               />
             </div>
@@ -168,6 +185,7 @@ export default function SignUp() {
                     <input className="dark:bg-gray-800 dark:text-gray-200 text-center justify-between tracking-[1em] sm:p-2 sm:text-xs md:p-2.5 md:text-sm lg:p-4 lg:text-lg border-solid border-2 border-sky-500 hover:border-red-600" 
                     id="verify"
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     type="text" 
                     maxLength={6}></input>
                   </div>
