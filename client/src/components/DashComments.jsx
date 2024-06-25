@@ -2,7 +2,30 @@ import { Modal, Table, Button } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { FaCheck, FaTimes } from 'react-icons/fa';
+
+// Component HighlightedText để highlight phần tìm thấy
+function HighlightedText({ text, highlight }) {
+  if (!highlight.trim()) {
+    return <span>{text}</span>;
+  }
+
+  const regex = new RegExp(`(${highlight})`, 'gi');
+  const parts = text.split(regex);
+
+  return (
+    <span>
+      {parts.map((part, index) =>
+        part.toLowerCase() === highlight.toLowerCase() ? (
+          <span key={index} className="bg-yellow-200">
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </span>
+  );
+}
 
 export default function DashComments() {
   const { currentUser } = useSelector((state) => state.user);
@@ -10,6 +33,8 @@ export default function DashComments() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [commentIdToDelete, setCommentIdToDelete] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -71,9 +96,22 @@ export default function DashComments() {
     }
   };
 
+  const filteredComments = comments.filter(
+    (comment) =>
+      comment.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      comment.userId.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
-      {currentUser.isAdmin && comments.length > 0 ? (
+      <input
+        type="text"
+        placeholder="Search comments..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full p-2 mb-4 border border-gray-300 rounded"
+      />
+      {currentUser.isAdmin && filteredComments.length > 0 ? (
         <>
           <Table hoverable className='shadow-md'>
             <Table.Head>
@@ -84,16 +122,20 @@ export default function DashComments() {
               <Table.HeadCell>UserId</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
-            {comments.map((comment) => (
+            {filteredComments.map((comment) => (
               <Table.Body className='divide-y' key={comment._id}>
                 <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
                   <Table.Cell>
                     {new Date(comment.updatedAt).toLocaleDateString()}
                   </Table.Cell>
-                  <Table.Cell>{comment.content}</Table.Cell>
+                  <Table.Cell>
+                    <HighlightedText text={comment.content} highlight={searchQuery} />
+                  </Table.Cell>
                   <Table.Cell>{comment.numberOfLikes}</Table.Cell>
                   <Table.Cell>{comment.postId}</Table.Cell>
-                  <Table.Cell>{comment.userId}</Table.Cell>
+                  <Table.Cell>
+                    <HighlightedText text={comment.userId} highlight={searchQuery} />
+                  </Table.Cell>
                   <Table.Cell>
                     <span
                       onClick={() => {
@@ -119,7 +161,7 @@ export default function DashComments() {
           )}
         </>
       ) : (
-        <p>You have no comments yet!</p>
+        <p>No comments found!</p>
       )}
       <Modal
         show={showModal}

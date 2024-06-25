@@ -4,12 +4,36 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
+function HighlightedText({ text, highlight }) {
+  if (!highlight.trim()) {
+    return <span>{text}</span>;
+  }
+
+  const regex = new RegExp(`(${highlight})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <span>
+      {parts.map((part, index) =>
+        part.toLowerCase() === highlight.toLowerCase() ? (
+          <span key={index} className="bg-yellow-200">
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </span>
+  );
+}
+
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [postIdToDelete, setPostIdToDelete] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -64,9 +88,22 @@ export default function DashPosts() {
     }
   };
 
+  const filteredPosts = userPosts.filter(
+    (post) =>
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.topicID.nameOfTopic.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-      {currentUser.isAdmin && userPosts.length > 0 ? (
+      <input
+        type="text"
+        placeholder="Search posts tittle or topic"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full p-2 mb-4 border border-gray-300 rounded"
+      />
+      {currentUser.isAdmin && filteredPosts.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -78,7 +115,7 @@ export default function DashPosts() {
               <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-              {userPosts.map((post) => (
+              {filteredPosts.map((post) => (
                 <Table.Row
                   key={post._id} // Add a unique key to each Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -91,10 +128,12 @@ export default function DashPosts() {
                   </Table.Cell>
                   <Table.Cell>
                     <Link className="font-medium text-gray-900 dark:text-white" to={`/post/${post.slug}`}>
-                      {post.title}
+                      <HighlightedText text={post.title} highlight={searchQuery} />
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{post.topicID.nameOfTopic}</Table.Cell>
+                  <Table.Cell>
+                    <HighlightedText text={post.topicID.nameOfTopic} highlight={searchQuery} />
+                  </Table.Cell>
                   <Table.Cell>{post.userId.username}</Table.Cell> {/* Hiển thị tên người tạo */}
                   <Table.Cell>
                     <span
@@ -118,7 +157,7 @@ export default function DashPosts() {
           )}
         </>
       ) : (
-        <p>You have no posts yet!</p>
+        <p>No posts found!</p>
       )}
       <Modal show={showModal} onClose={() => setShowModal(false)} popup size="md">
         <Modal.Header />
