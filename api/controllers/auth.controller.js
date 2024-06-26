@@ -1,10 +1,11 @@
 import User from "../models/user.model.js";
-import Otp from "../models/otp.model.js"
+import Otp from "../models/otp.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
-import {validPassword, validEmail} from "../utils/validate.js";
-import sendEmail from "../utils/sendmail.js";
+import { validPassword, validEmail } from "../utils/validate.js";
+
+import sendMail from "../utils/sendmail.js";
 
 export const verifyemail = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -13,58 +14,61 @@ export const verifyemail = async (req, res, next) => {
     next(errorHandler(400, "All fields are required"));
   }
 
-  if(!validPassword.test(password)){
+  if (!validPassword.test(password)) {
     console.log(password);
-    next(errorHandler(400, 'Password must minimum six characters, at least one letter, one number'));
+    next(errorHandler(400, "Password must minimum six characters, at least one letter, one number"));
   }
 
-  if(!validEmail.test(email)){
-      next(errorHandler(400, 'Invalid email'));
+  if (!validEmail.test(email)) {
+    next(errorHandler(400, "Invalid email"));
   }
 
   try {
-
     const validUser = await User.findOne({ username });
     const validEmail = await User.findOne({ email });
-    
-    if(validUser){
+
+    if (validUser) {
       return next(errorHandler(400, "Username had been registered"));
     }
-    
-    if(validEmail) {
+
+    if (validEmail) {
       return next(errorHandler(400, "Email had been registered"));
     }
 
-
-    let otp = Math.floor(100000 + Math.random()*900000);
+    let otp = Math.floor(100000 + Math.random() * 900000);
     console.log(otp.toString());
 
     try {
-      await sendEmail({to: [email], subject: 'Mã xác thực OTP', html: "<h1>Xác nhận OTP</h1> <p>Xin chào,</p> <p>Mã OTP của bạn là: <strong>"+ otp.toString() + "</strong></p> <p>Vui lòng nhập mã OTP này vào DevB Blog để xác nhận tài khoản của bạn.</p> <p>Mã OTP này chỉ có giá trị trong 1 phút.</p>  <p>Trân trọng,</p>"});
-      
+      await sendEmail({
+        to: [email],
+        subject: "Mã xác thực OTP",
+        html:
+          "<h1>Xác nhận OTP</h1> <p>Xin chào,</p> <p>Mã OTP của bạn là: <strong>" +
+          otp.toString() +
+          "</strong></p> <p>Vui lòng nhập mã OTP này vào DevB Blog để xác nhận tài khoản của bạn.</p> <p>Mã OTP này chỉ có giá trị trong 1 phút.</p>  <p>Trân trọng,</p>",
+      });
+
       const hashedOtp = bcryptjs.hashSync(otp.toString(), 10);
-  
-      const verifyOtp = await Otp.findOne({email});
-      if(verifyOtp){
+
+      const verifyOtp = await Otp.findOne({ email });
+      if (verifyOtp) {
         await Otp.findByIdAndDelete(verifyOtp._id);
       }
-      
+
       const newOtp = new Otp({
         email: email,
         otp: hashedOtp,
       });
-    
+
       await newOtp.save();
       res.json("OTP sent successfully!");
-
     } catch (error) {
       return next(errorHandler(400, error));
     }
-
   } catch (error) {
     next(error);
   }
-}
+};
 
 export const signup = async (req, res, next) => {
   const { username, email, password, verify } = req.body;
@@ -73,24 +77,24 @@ export const signup = async (req, res, next) => {
     return next(errorHandler(400, "All fields are required"));
   }
 
-  if(!validPassword.test(password)){
-    return next(errorHandler(400, 'Password must minimum six characters, at least one letter, one number'));
+  if (!validPassword.test(password)) {
+    return next(errorHandler(400, "Password must minimum six characters, at least one letter, one number"));
   }
 
-  if(!validEmail.test(email)){
-    return  next(errorHandler(400, 'Invalid email'));
+  if (!validEmail.test(email)) {
+    return next(errorHandler(400, "Invalid email"));
   }
 
-  const verifyOtp = await Otp.findOne({email});
+  const verifyOtp = await Otp.findOne({ email });
 
   const validOtp = bcryptjs.compareSync(verify, verifyOtp.otp);
 
   await Otp.findByIdAndDelete(verifyOtp._id);
-  
-  if(!validOtp){
-    return next(errorHandler(400, 'OTP not correct'));
+
+  if (!validOtp) {
+    return next(errorHandler(400, "OTP not correct"));
   }
-  
+
   const hashedPassword = bcryptjs.hashSync(password, 10);
 
   const newUser = new User({
@@ -123,7 +127,7 @@ export const signin = async (req, res, next) => {
     if (!validPassword) {
       return next(errorHandler(400, "Invalid password"));
     }
-    if(validUser.isBan){
+    if (validUser.isBan) {
       return next(errorHandler(401, "Your account has been locked due to violating the blog's terms"));
     }
     const token = jwt.sign({ id: validUser._id, isAdmin: validUser.isAdmin }, process.env.JWT_SECRET);
@@ -146,7 +150,7 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      if(user.isBan){
+      if (user.isBan) {
         return next(errorHandler(401, "Your account has been locked due to violating the blog's terms"));
       }
       const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
