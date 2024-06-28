@@ -14,15 +14,17 @@ export default function PostPage() {
   const [recentPosts, setRecentPosts] = useState(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportContent, setReportContent] = useState("");
-
   const [isReportSuccess, setIsReportSuccess] = useState(false);
-  const [userId, setUserId] = useState(null); // State để lưu userId
+  const [userId, setUserId] = useState(null);
+  const [isPremium, setIsPremium] = useState(false); // State to manage premium status
 
   useEffect(() => {
     // Dynamic import jwt-decode
+    let jwtDecode;
     const importJwtDecode = async () => {
       const module = await import("jwt-decode");
-      jwtDecode = module.default; // Truy cập default export
+      jwtDecode = module.default;
+      decodeToken(); // Decode token after importing jwt-decode
     };
     importJwtDecode();
   }, []);
@@ -66,36 +68,31 @@ export default function PostPage() {
     fetchRecentPosts();
   }, []);
 
-  useEffect(() => {
-    // Hàm lấy userId từ token
-    const decodeToken = () => {
-      const token = localStorage.getItem("token"); // Giả sử token được lưu trữ trong localStorage
-      if (token && jwtDecode) {
-        // Đảm bảo jwtDecode đã được import
-        const decoded = jwtDecode(token); // Sử dụng jwtDecode
-        setUserId(decoded.id); // Lưu userId vào state
-      }
-    };
-    decodeToken();
-  }, [jwtDecode]); // Thực hiện decodeToken khi jwtDecode được import
+  const decodeToken = () => {
+    const token = localStorage.getItem("token");
+    if (token && jwtDecode) {
+      const decoded = jwtDecode(token);
+      setUserId(decoded.id);
+      setIsPremium(decoded.isPremium); // Set premium status
+    }
+  };
 
-  // Hàm mở Modal báo cáo
   const openReportModal = () => {
     setIsReportModalOpen(true);
   };
 
-  // Hàm đóng Modal báo cáo
   const closeReportModal = () => {
     setIsReportModalOpen(false);
     setReportContent("");
   };
+
   const showSuccessMessage = () => {
     setIsReportSuccess(true);
     setTimeout(() => {
       setIsReportSuccess(false);
-    }, 5000); // Đặt thời gian tồn tại là 5 giây (5000 miliseconds)
+    }, 5000);
   };
-  // Hàm gửi báo cáo
+
   const submitReport = async () => {
     try {
       const response = await fetch("/api/report/create", {
@@ -115,11 +112,10 @@ export default function PostPage() {
         closeReportModal();
         showSuccessMessage();
       } else {
-        // Xử lý lỗi nếu có
-        console.error("Gửi báo cáo thất bại");
+        console.error("Report submission failed");
       }
     } catch (error) {
-      console.error("Lỗi:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -129,6 +125,9 @@ export default function PostPage() {
         <Spinner size="xl" />
       </div>
     );
+
+  const content = post && post.content;
+  const halfContent = content && content.slice(0, Math.floor(content.length / 2));
 
   return (
     <main className="p-3 flex flex-col max-w-6xl mx-auto min-h-screen">
@@ -142,17 +141,21 @@ export default function PostPage() {
 
       <div
         className="p-3 max-w-2xl mx-auto w-full post-content"
-        dangerouslySetInnerHTML={{ __html: post && post.content }}
+        dangerouslySetInnerHTML={{ __html: isPremium ? content : halfContent }}
       ></div>
-      <div className="max-w-2xl mx-auto w-full">
-        {post && <CallToAction />} {/* Đảm bảo rằng thành phần CallToAction chỉ được render khi có dữ liệu post */}
-      </div>
+      {!isPremium && (
+        <div className="text-center my-5">
+          <Link to="/payment" className="font-bold text-blue-500 underline">
+            Subscribe for full content
+          </Link>
+        </div>
+      )}
+      <div className="max-w-2xl mx-auto w-full">{post && <CallToAction />}</div>
       {post && <CommentSection postId={post._id} />}
 
-      {/* Nút báo cáo */}
       <div className="max-w-2xl mx-auto w-full mt-4 flex justify-end">
         <Button color="red" onClick={openReportModal}>
-          Báo cáo
+          Report
         </Button>
       </div>
 
@@ -163,12 +166,11 @@ export default function PostPage() {
         </div>
       </div>
 
-      {/* Modal báo cáo */}
       <Modal show={isReportModalOpen} onClose={closeReportModal}>
-        <Modal.Header>Báo cáo bài đăng</Modal.Header>
+        <Modal.Header>Report Post</Modal.Header>
         <Modal.Body>
           <Textarea
-            placeholder="Nhập nội dung báo cáo của bạn..."
+            placeholder="Enter your report content..."
             rows={4}
             value={reportContent}
             onChange={(e) => setReportContent(e.target.value)}
@@ -176,17 +178,17 @@ export default function PostPage() {
         </Modal.Body>
         <Modal.Footer>
           <Button color="gray" onClick={closeReportModal}>
-            Hủy
+            Cancel
           </Button>
-          <button color="red " onClick={submitReport}>
-            Gửi báo cáo
-          </button>
+          <Button color="red" onClick={submitReport}>
+            Submit Report
+          </Button>
         </Modal.Footer>
       </Modal>
 
       {isReportSuccess && (
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 p-2 bg-green-500 text-white rounded shadow-md">
-          Báo cáo đã được gửi thành công!
+          Report successfully submitted!
         </div>
       )}
     </main>

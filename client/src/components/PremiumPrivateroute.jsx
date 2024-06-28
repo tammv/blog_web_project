@@ -3,5 +3,5 @@ import { Outlet, Navigate } from "react-router-dom";
 
 export default function PremiumPrivateRoute() {
   const { currentUser } = useSelector((state) => state.user);
-  return currentUser && currentUser.isPremium ? <Outlet /> : <Navigate to="/sign-in" />;
+  return currentUser && currentUser.isPremium ? <Outlet /> : <Navigate to="/payment" />;
 }
