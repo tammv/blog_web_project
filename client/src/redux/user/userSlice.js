@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     currentUser: null,
     error: null,
-    loading: false
+    loading: false,
 }
 
 const userSlice = createSlice({
@@ -40,7 +40,7 @@ const userSlice = createSlice({
             state.loading = true;
             state.error = null;
         },
-        deleteUserSuccess: (state, action) => {
+        deleteUserSuccess: (state) => {
             state.currentUser = null;
             state.loading = false;
             state.error = null;
@@ -53,6 +53,7 @@ const userSlice = createSlice({
             state.currentUser = null;
             state.error = null;
             state.loading = false;
+            location.href = '/';
         },
     }
 });

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import DashSidebar from "../components/DashSidebar";
 import DashProfile from "../components/DashProfile";
 import DashPosts from "../components/DashPosts";
+import DashQuizzes from "../components/DashQuizzes";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -14,6 +15,7 @@ export default function Dashboard() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+  
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="md:w-56">
@@ -24,6 +26,8 @@ export default function Dashboard() {
       {tab === "profile" && <DashProfile />}
       {/* posts... */}
       {tab === "posts" && <DashPosts />}
+      
+      {tab === "quizzes" && <DashQuizzes/>}
     </div>
   );
 }

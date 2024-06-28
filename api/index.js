@@ -8,6 +8,7 @@ import paymentRoutes from "./routes/payment.route.js";
 import commentRoutes from "./routes/comment.route.js";
 import topicRoutes from "./routes/topic.route.js";
 import reportRoutes from "./routes/report.route.js";
+import quizRoutes from "./routes/quiz.route.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 
@@ -38,6 +39,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/topic", topicRoutes);
 app.use("/api/report", reportRoutes);
+app.use("/api/quiz", quizRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

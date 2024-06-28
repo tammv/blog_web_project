@@ -16,6 +16,7 @@ import PostPage from "./pages/PostPage";
 import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
 import PaymentPage from "./pages/Payment";
+import CreateQuiz from "./pages/CreateQuiz";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="/update-post/:postId" element={<UpdatePost />} />
           </Route>
         )}
+        <Route path="/create-quiz" element={<CreateQuiz/>}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>

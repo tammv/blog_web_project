@@ -1,6 +1,5 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import React from "react";
-import { Link, redirect, useLocation } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -24,8 +23,6 @@ export default function Header() {
         console.log(data.message);
       } else {
         dispatch(signoutSuccess());
-
-        window.location.href = "/sign-in";
       }
     } catch (error) {
       console.log(error.message);
