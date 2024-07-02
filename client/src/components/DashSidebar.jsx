@@ -1,5 +1,5 @@
 import { Sidebar } from "flowbite-react";
-import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiAnnotation, HiChartPie, HiClipboardList } from "react-icons/hi";
+import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiAnnotation, HiChartPie, HiClipboardList, HiArchive } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -92,6 +92,11 @@ export default function DashSidebar() {
             <Link to="/dashboard?tab=quizzes">
               <Sidebar.Item active={tab === "quizzes"} icon={HiClipboardList} as="div">
                 Quiz
+              </Sidebar.Item>
+            </Link>
+            <Link to="/dashboard?tab=savedpost">
+              <Sidebar.Item active={tab === "savedpost"} icon={HiArchive} as="div">
+                Saved Post
               </Sidebar.Item>
             </Link>
           </Link>
