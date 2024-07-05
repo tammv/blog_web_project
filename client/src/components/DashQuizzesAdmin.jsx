@@ -10,15 +10,16 @@ export default function DashQuizzes() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [quizIdToDelete, setQuizIdToDelete] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const res = await fetch(`/api/quiz/?userId=${currentUser._id}`);
+        const res = await fetch(`/api/quiz`);
         const data = await res.json();
         if (res.ok) {
           setUserQuizzes(data.quizzes);
-          if (data.quizzes.length < 9) {
+          if(data.quizzes.length < 9){
             setShowMore(false);
           }
         }
@@ -26,7 +27,9 @@ export default function DashQuizzes() {
         console.log(error.message);
       }
     };
-    fetchQuizzes();
+    if (currentUser.isAdmin) {
+      fetchQuizzes();
+    }
   }, [currentUser._id]);
 
   const handleShowMore = async () => {
@@ -48,7 +51,7 @@ export default function DashQuizzes() {
   const handleDeleteQuiz = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(`/api/quiz/${quizIdToDelete}/${currentUser._id}`, {
+      const res = await fetch(`/api/quiz/${quizIdToDelete}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -62,20 +65,33 @@ export default function DashQuizzes() {
     }
   };
 
+  const filteredQuizzes = userQuizzes.filter(
+    (quiz) =>
+      quiz.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      quiz.topicID.nameOfTopic.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-      {userQuizzes.length > 0 ? (
+      <input
+        type="text"
+        placeholder="Search quizzes tittle or topic"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full p-2 mb-4 border border-gray-300 rounded"
+      />
+      {currentUser.isAdmin && filteredQuizzes.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
               <Table.HeadCell>Date updated</Table.HeadCell>
               <Table.HeadCell>Quizz</Table.HeadCell>
               <Table.HeadCell>Topic</Table.HeadCell>
+              <Table.HeadCell>Creator</Table.HeadCell> {/* Thêm cột Creator */}
               <Table.HeadCell>Delete</Table.HeadCell>
-              <Table.HeadCell>Edit</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-              {userQuizzes.map((quiz) => (
+              {filteredQuizzes.map((quiz) => (
                 <Table.Row
                   key={quiz._id} // Add a unique key to each Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -86,7 +102,10 @@ export default function DashQuizzes() {
                       {quiz.title}
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{quiz.topicID.nameOfTopic}</Table.Cell>
+                  <Table.Cell>
+                    {quiz.topicID.nameOfTopic}
+                  </Table.Cell>
+                  <Table.Cell>{quiz.userId.username}</Table.Cell> {/* Hiển thị tên người tạo */}
                   <Table.Cell>
                     <span
                       onClick={() => {
@@ -97,11 +116,6 @@ export default function DashQuizzes() {
                     >
                       Delete
                     </span>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link className="text-teal-500 hover:underline" to={`/update-quiz/${quiz._id}`}>
-                      Edit
-                    </Link>
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -114,7 +128,7 @@ export default function DashQuizzes() {
           )}
         </>
       ) : (
-        <p>You have no quizzes yet!</p>
+        <p>No quizzes found!</p>
       )}
       <Modal show={showModal} onClose={() => setShowModal(false)} popup size="md">
         <Modal.Header />

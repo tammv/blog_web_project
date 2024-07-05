@@ -14,6 +14,7 @@ router.put('/:quizId', verifyToken, updateQuizById);
 router.put('/:quizId/question/:questionId', verifyToken, updateQuestionById);
 
 router.delete('/:quizId', verifyToken, deleteQuizById);
+router.delete('/:quizId/:userId', verifyToken, deleteQuizById);
 router.delete('/:quizId/question/:questionId', verifyToken, deleteQuestionById);
 
 export default router;

@@ -9,6 +9,7 @@ import DashboardComp from "../components/DashboardComp";
 import DashReports from "../components/DashReport";
 import DashTopics from "../components/DashTopic";
 import DashVideosAdmin from "../components/DashVideoAdmin";
+import DashQuizzes from "../components/DashQuizzesAdmin";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -30,6 +31,8 @@ export default function Dashboard() {
       {tab === "profile" && <DashProfile />}
       {/* posts... */}
       {tab === "postsadmin" && <DashPostsAdmin />}
+      {/* quizzes... */}
+      {tab === "quizzesadmin" && <DashQuizzes/>}
       {/* videos... */}
       {tab === "videosadmin" && <DashVideosAdmin />}
       {/* users */}

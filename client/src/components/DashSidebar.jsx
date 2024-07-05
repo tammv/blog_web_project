@@ -52,6 +52,11 @@ export default function DashSidebar() {
                   Posts
                 </Sidebar.Item>
               </Link>
+              <Link to="/dashboardadmin?tab=quizzesadmin">
+              <Sidebar.Item active={tab === "quizzes"} icon={HiClipboardList} as="div">
+                Quiz
+              </Sidebar.Item>
+            </Link>
               <Link to="/dashboardadmin?tab=videosadmin">
                 <Sidebar.Item active={tab === "videos"} icon={HiDocumentText} as="div">
                   Videos
