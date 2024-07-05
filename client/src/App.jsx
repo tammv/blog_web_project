@@ -6,6 +6,7 @@ import SignIn from "./pages/SignIn";
 import Dashboard from "./pages/Dashboard";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import SignUp from "./pages/SignUp";
+import Blogs from "./pages/Blogs";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
@@ -37,6 +38,8 @@ export default function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/blogs" element={<Blogs />} />
+
         <Route path="/video/:videoId" element={<VideoComponent />} />
         <Route path="/videos" element={<ListVideoComponent />} />
         <Route path="/createVideo" element={<CreateVideo />} />
@@ -54,10 +57,10 @@ export default function App() {
             <Route path="/update-video/:videoId" element={<UpdateVideo />} />
           </Route>
         )}
-        <Route path="/create-quiz" element={<CreateQuiz/>}></Route>
-        <Route path="/quiz/:quizId/questions" element={<CreateQuiz/>}></Route>
-        <Route path="/quiz/:quizId" element={<DisplayQuestion/>}></Route>
-        <Route path="/quiz" element={<QuizPage/>}></Route>
+        <Route path="/create-quiz" element={<CreateQuiz />}></Route>
+        <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
+        <Route path="/quiz/:quizId" element={<DisplayQuestion />}></Route>
+        <Route path="/quiz" element={<QuizPage />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>
