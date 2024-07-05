@@ -29,7 +29,7 @@ const quizScheme = new mongoose.Schema(
         questions:[{
             type: mongoose.Schema.Types.ObjectId,
             ref: "Question",
-            required: true
+            default: []
         }],
     }, { timestamps: true }
 );

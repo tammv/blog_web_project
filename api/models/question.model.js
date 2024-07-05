@@ -10,18 +10,17 @@ const questionScheme = new mongoose.Schema(
       type: String,
       required: true
     }],
-    correctAnswerIndex: [{
-        type: Number,
-        required: true,
-        min: 0,
-        validate: {
-          validator: (value) => {
-            const uniqueSet = new Set(value); // Create a Set for unique values
-            return uniqueSet.size === value.length; // Check if set size matches array length
-          },
-          message: "correctAnswerIndex must contain unique values",
+    correctAnswerIndex: {
+      type: [Number],
+      required: true,
+      validate: {
+        validator: (value) => {
+          const uniqueSet = new Set(value);
+          return uniqueSet.size === value.length;
         },
-    }]
+        message: "correctAnswerIndex must contain unique values",
+      },
+    },
   },
   { timestamps: true }
 );

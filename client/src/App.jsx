@@ -17,6 +17,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
 import PaymentPage from "./pages/Payment";
 import CreateQuiz from "./pages/CreateQuiz";
+import QuizPage from "./pages/QuizPage";
+import DisplayQuestion from "./components/DisplayQuestion";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -45,6 +47,9 @@ export default function App() {
           </Route>
         )}
         <Route path="/create-quiz" element={<CreateQuiz/>}></Route>
+        <Route path="/quiz/:quizId/questions" element={<CreateQuiz/>}></Route>
+        <Route path="/quiz/:quizId" element={<DisplayQuestion/>}></Route>
+        <Route path="/quiz" element={<QuizPage/>}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>
