@@ -52,6 +52,11 @@ export default function DashSidebar() {
                   Posts
                 </Sidebar.Item>
               </Link>
+              <Link to="/dashboardadmin?tab=videosadmin">
+                <Sidebar.Item active={tab === "videos"} icon={HiDocumentText} as="div">
+                  Videos
+                </Sidebar.Item>
+              </Link>
               <Link to="/dashboardadmin?tab=users">
                 <Sidebar.Item active={tab === "users"} icon={HiOutlineUserGroup} as="div">
                   Users
@@ -87,6 +92,11 @@ export default function DashSidebar() {
             <Link to="/dashboard?tab=posts">
               <Sidebar.Item active={tab === "posts"} icon={HiDocumentText} as="div">
                 Posts
+              </Sidebar.Item>
+            </Link>
+            <Link to="/dashboard?tab=videos">
+              <Sidebar.Item active={tab === "videos"} icon={HiDocumentText} as="div">
+                Videos
               </Sidebar.Item>
             </Link>
             <Link to="/dashboard?tab=quizzes">

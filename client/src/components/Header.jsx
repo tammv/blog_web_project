@@ -79,6 +79,9 @@ export default function Header() {
         <Navbar.Link active={path === "/blogs"} as={"div"}>
           <Link to="/blogs">Blogs</Link>
         </Navbar.Link>
+        <Navbar.Link active={path === "/videos"} as={"div"}>
+          <Link to="/videos">Videos</Link>
+        </Navbar.Link>
         {currentUser && !currentUser.isAdmin && (
           <Navbar.Link active={path === "/payment"} as={"div"}>
             <Link to="/payment">Payment</Link>

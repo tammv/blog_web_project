@@ -16,6 +16,10 @@ import PostPage from "./pages/PostPage";
 import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
 import PaymentPage from "./pages/Payment";
+import VideoComponent from "./pages/Video";
+import ListVideoComponent from "./pages/ListVideo";
+import CreateVideo from "./pages/CreateVideo";
+import UpdateVideo from "./pages/UpdateVideo";
 import CreateQuiz from "./pages/CreateQuiz";
 import QuizPage from "./pages/QuizPage";
 import DisplayQuestion from "./components/DisplayQuestion";
@@ -33,6 +37,9 @@ export default function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/video/:videoId" element={<VideoComponent />} />
+        <Route path="/videos" element={<ListVideoComponent />} />
+        <Route path="/createVideo" element={<CreateVideo />} />
         <Route path="/post/:postSlug" element={<PostPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         {currentUser && currentUser.isAdmin ? (
@@ -44,6 +51,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-post" element={<CreatePost />} />
             <Route path="/update-post/:postId" element={<UpdatePost />} />
+            <Route path="/update-video/:videoId" element={<UpdateVideo />} />
           </Route>
         )}
         <Route path="/create-quiz" element={<CreateQuiz/>}></Route>
