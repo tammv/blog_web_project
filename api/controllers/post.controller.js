@@ -122,3 +122,4 @@ export const updatepost = async (req, res, next) => {
     next(error);
   }
 };
+

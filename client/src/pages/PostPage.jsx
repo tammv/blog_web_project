@@ -5,6 +5,7 @@ import CallToAction from "../components/CallToAction";
 import CommentSection from "../components/CommentSection";
 import PostCard from "../components/PostCard";
 import TopicList from "../components/TopicList";
+import { useSelector } from "react-redux";
 
 export default function PostPage() {
   const { postSlug } = useParams();
@@ -17,6 +18,8 @@ export default function PostPage() {
   const [isReportSuccess, setIsReportSuccess] = useState(false);
   const [userId, setUserId] = useState(null);
   const [isPremium, setIsPremium] = useState(false); // State to manage premium status
+  const [isSaveSuccess, setIsSaveSuccess] = useState(false); // State to manage save success
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     // Dynamic import jwt-decode
@@ -106,13 +109,37 @@ export default function PostPage() {
           userId: userId,
         }),
       });
-
       if (response.ok) {
         setIsReportSuccess(true);
         closeReportModal();
         showSuccessMessage();
       } else {
         console.error("Report submission failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const savePost = async () => {
+    try {
+      const response = await fetch("/api/save/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          postId: post._id,
+          userId: currentUser._id,
+        }),
+      });
+      if (response.ok) {
+        setIsSaveSuccess(true);
+        setTimeout(() => {
+          setIsSaveSuccess(false);
+        }, 5000);
+      } else {
+        console.error("Save post failed");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -157,6 +184,9 @@ export default function PostPage() {
         <Button color="red" onClick={openReportModal}>
           Report
         </Button>
+        <Button color="blue" onClick={savePost} className="ml-3">
+          Save Post
+        </Button>
       </div>
 
       <div className="flex flex-col justify-center items-center mb-5">
@@ -189,6 +219,11 @@ export default function PostPage() {
       {isReportSuccess && (
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 p-2 bg-green-500 text-white rounded shadow-md">
           Report successfully submitted!
+        </div>
+      )}
+      {isSaveSuccess && (
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 p-2 bg-green-500 text-white rounded shadow-md">
+          Post saved successfully!
         </div>
       )}
     </main>
