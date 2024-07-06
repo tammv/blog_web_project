@@ -29,7 +29,14 @@ export const getSavedPosts = async (req, res, next) => {
     }
 
     try {
-        const savedPosts = await SavePost.find({ userId }).populate('postId');
+        const savedPosts = await SavePost.find({ userId }).populate({
+            path: 'postId',
+            populate: {
+                path: 'topicID',
+                model: 'Topic',
+                select: 'nameOfTopic'
+            }
+        });
         res.status(200).json(savedPosts);
     } catch (error) {
         next(error);
@@ -38,7 +45,14 @@ export const getSavedPosts = async (req, res, next) => {
 
 export const getAllSavePost = async (req, res, next) => {
     try {
-        const allSavedPosts = await SavePost.find().populate('postId userId');
+        const allSavedPosts = await SavePost.find().populate({
+            path: 'postId userId',
+            populate: {
+                path: 'topicID',
+                model: 'Topic',
+                select: 'nameOfTopic'
+            }
+        });
         res.status(200).json(allSavedPosts);
     } catch (error) {
         next(error);
@@ -52,4 +66,4 @@ export const removeSavedPost = async (req, res, next) => {
     } catch (error) {
       next(error);
     }
-  };
+};

@@ -69,10 +69,11 @@ export default function DashSavePost() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>Post ID</Table.HeadCell>
-              <Table.HeadCell>Title</Table.HeadCell>
-              <Table.HeadCell>Image</Table.HeadCell>
-              <Table.HeadCell>Remove Post</Table.HeadCell>
+              <Table.HeadCell>DATE UPDATED</Table.HeadCell>
+              <Table.HeadCell>POST IMAGE</Table.HeadCell>
+              <Table.HeadCell>POST TITLE</Table.HeadCell>
+              <Table.HeadCell>TOPIC</Table.HeadCell>
+              <Table.HeadCell>REMOVE</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {userPosts.map((savedpost) => (
@@ -80,11 +81,12 @@ export default function DashSavePost() {
                   key={savedpost._id} // Add a unique key to each Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Cell>{savedpost._id}</Table.Cell>
-                  <Table.Cell>{savedpost.title}</Table.Cell>
+                  <Table.Cell>{new Date(savedpost.updatedAt).toLocaleDateString()}</Table.Cell>
                   <Table.Cell>
-                    <img src={savedpost.image} alt={savedpost.title} className="w-20 h-10 object-cover bg-gray-500" />
+                    <img src={savedpost.postId.image} alt={savedpost.postId.title} className="w-20 h-10 object-cover bg-gray-500" />
                   </Table.Cell>
+                  <Table.Cell>{savedpost.postId.title}</Table.Cell>
+                  <Table.Cell>{savedpost.postId.topicID.nameOfTopic}</Table.Cell>
                   <Table.Cell>
                     <span
                       onClick={() => {
