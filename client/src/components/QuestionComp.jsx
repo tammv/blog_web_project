@@ -2,7 +2,7 @@ import { Button, Checkbox, Textarea } from "flowbite-react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoAddSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 function QuestionComp() {
   const [questionText, setQuestionText] = useState("");
@@ -139,10 +139,15 @@ function QuestionComp() {
           </Button>
         </div>
       </div>
-      <div className="flex justify-center mt-9">
-        <Button className="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% hover:from-pink-500 hover:to-yellow-500 ..." onClick={handleSubmitQuestion}>
+      <div className="flex justify-center mt-9 gap-9">
+        <Button className="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% hover:from-pink-500 hover:to-yellow-500" onClick={handleSubmitQuestion}>
           Add Question
         </Button>
+        <Link to={`/quiz/${quizId}`}>
+          <Button className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-500">
+            Back To Quizz
+          </Button>
+        </Link>
       </div>
     </>
   );

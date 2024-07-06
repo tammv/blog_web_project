@@ -15,7 +15,7 @@ export default function DashQuizzes() {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const res = await fetch(`/api/quiz`);
+        const res = await fetch(`/api/quiz/?userId=${currentUser._id}`);
         const data = await res.json();
         if (res.ok) {
           setUserQuizzes(data.quizzes);

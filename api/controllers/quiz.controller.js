@@ -10,8 +10,9 @@ export const getAllQuiz = async (req, res, next) => {
     const sortDirection = req.query.order === "asc" ? 1 : -1;
 
     const queryOptions = {};
-    const users =  await User.findById(req.query.userId).isAdmin || true;
-    if (req.query.userId && !users) {
+    const users =  await User.findById(req.query.userId);
+    
+    if (req.query.userId && !users.isAdmin) {
       queryOptions.userId = req.query.userId;
     }
     if (req.query.topicID) {
