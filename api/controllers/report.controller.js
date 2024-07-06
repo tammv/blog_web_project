@@ -1,98 +1,142 @@
 import Report from "../models/report.model.js";
+import Post from "../models/post.model.js"; // Import Post model
+import Video from "../models/video.model.js";
+import asyncHandler from "express-async-handler";
 
-export const createReport = async (req, res) => {
+// Create a new report
+export const createReport = asyncHandler(async (req, res) => {
+  const { referenceId, referenceType, content } = req.body;
+
+  // Validate referenceType
+  if (!["Post", "Video"].includes(referenceType)) {
+    return res.status(400).json({ message: "referenceType must be either 'Post' or 'Video'" });
+  }
+
+  // Validate referenceId
+  if (!referenceId) {
+    return res.status(400).json({ message: "referenceId is required" });
+  }
+
+  // Create new report
+  const newReport = new Report({
+    referenceId,
+    referenceType,
+    content,
+    userId: req.user.id,
+  });
+
+  // Save the report to the database
+  const savedReport = await newReport.save();
+
+  // Respond with the saved report
+  res.status(201).json(savedReport);
+});
+
+export const getAllReports = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+
   try {
-    // Xác định userId từ req.user.id
-    const userId = req.user.id;
+    // Fetch reports with user information
+    const reports = await Report.find()
+      .populate("userId", "username email")
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit))
+      .lean(); // Convert to plain JavaScript objects
 
-    // Kiểm tra và xử lý postId từ req.body
-    const { postId } = req.body;
-    if (!postId) {
-      return res.status(400).json({ message: "postId là bắt buộc" });
-    }
+    // Fetch reference information for each report
+    const populatedReports = await Promise.all(
+      reports.map(async (report) => {
+        if (report.referenceType === "Post") {
+          const post = await Post.findById(report.referenceId).select("title content slug").lean();
+          if (post) {
+            report.referenceId = post; // Attach the post details
+          }
+        } else if (report.referenceType === "Video") {
+          const video = await Video.findById(report.referenceId).select("title content url slug").lean();
+          if (video) {
+            report.referenceId = video; // Attach the video details
+          }
+        }
+        return report;
+      })
+    );
 
-    // Tạo báo cáo mới từ dữ liệu trong request body và thêm userId
-    const newReport = new Report({
-      ...req.body, // Lấy tất cả các trường từ request body (bao gồm postId)
-      userId, // Thêm userId của người dùng hiện tại
+    const totalReports = await Report.countDocuments();
+    res.status(200).json({
+      reports: populatedReports,
+      totalPages: Math.ceil(totalReports / limit),
+      currentPage: page,
     });
-
-    // Lưu báo cáo vào cơ sở dữ liệu
-    const savedReport = await newReport.save();
-
-    // Trả về báo cáo mới với mã trạng thái 201 (Created)
-    res.status(201).json(savedReport);
   } catch (error) {
-    // Nếu có lỗi, trả về mã trạng thái 400 (Bad Request) và thông báo lỗi
-    res.status(400).json({ message: error.message });
+    console.error("Error fetching reports:", error.message);
+    res.status(500).json({ message: "Failed to fetch reports" });
   }
-};
+});
+// Get reports by user ID
+export const getReportById = asyncHandler(async (req, res) => {
+  const reportId = req.params.id;
 
-// Lấy tất cả các báo cáo
-export const getAllReports = async (req, res) => {
   try {
-    // Tìm tất cả các báo cáo và điền thêm thông tin của bài viết và người dùng liên quan
-    const reports = await Report.find().populate("postId").populate("userId");
-    res.status(200).json(reports);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    const report = await Report.findById(reportId)
+      .populate({
+        path: "referenceId",
+        select: "title content url", // Adjust fields based on your schema
+        model: "Post", // Specify the model name for referenceId
+      })
+      .populate("userId", "username email");
 
-// Lấy một báo cáo theo ID
-export const getReportById = async (req, res) => {
-  try {
-    // Tìm báo cáo theo ID và điền thêm thông tin của bài viết và người dùng liên quan
-    const report = await Report.findById(req.params.id).populate("postId").populate("userId");
     if (!report) {
-      return res.status(404).json({ message: "Không tìm thấy báo cáo" });
+      return res.status(404).json({ message: "Report not found" });
     }
+
     res.status(200).json(report);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching report:", error.message);
+    res.status(500).json({ message: "Failed to fetch report" });
   }
-};
+});
 
-// Cập nhật một báo cáo theo ID
-export const updateReportById = async (req, res) => {
-  try {
-    // Kiểm tra xem người dùng hiện tại có phải là chủ sở hữu của báo cáo không
-    const userId = req.user.id;
-    const report = await Report.findById(req.params.id).populate("postId");
-    if (!report) {
-      return res.status(404).json({ message: "Không tìm thấy báo cáo" });
-    }
-    if (report.userId.toString() !== userId) {
-      return res.status(403).json({ message: "Bạn không có quyền cập nhật báo cáo này" });
-    }
+// Update a report by ID
+export const updateReportById = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const report = await Report.findById(req.params.id);
 
-    // Tìm báo cáo theo ID và cập nhật nó với dữ liệu từ request body
-    const updatedReport = await Report.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-
-    res.status(200).json(updatedReport);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  if (!report) {
+    return res.status(404).json({ message: "Report not found" });
   }
-};
 
-// Xóa một báo cáo theo ID
-export const deleteReportById = async (req, res) => {
+  if (report.userId.toString() !== userId) {
+    return res.status(403).json({ message: "You are not authorized to update this report" });
+  }
+
+  const updatedReport = await Report.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+
+  res.status(200).json(updatedReport);
+});
+
+// Backend endpoint to delete a report by ID
+// Assuming you are using asyncHandler for error handling
+export const deleteReportById = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
   try {
-    // Kiểm tra xem người dùng hiện tại có phải là chủ sở hữu của báo cáo không
-    const userId = req.user.id;
     const report = await Report.findById(req.params.id);
+
     if (!report) {
-      return res.status(404).json({ message: "Không tìm thấy báo cáo" });
-    }
-    if (report.userId.toString() !== userId) {
-      return res.status(403).json({ message: "Bạn không có quyền xóa báo cáo này" });
+      return res.status(404).json({ message: "Report not found" });
     }
 
-    // Xóa báo cáo theo ID
-    const deletedReport = await Report.findByIdAndDelete(req.params.id);
+    // // Check if the user is authorized to delete the report
+    // if (report.userId && report.userId.toString() !== userId) {
+    //   return res.status(403).json({ message: "You are not authorized to delete this report" });
+    // }
 
-    res.status(200).json({ message: "Báo cáo đã được xóa thành công" });
+    // Delete the report
+    await report.deleteOne(); // Using deleteOne() to delete the document
+
+    res.status(200).json({ message: "Report deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error deleting report:", error.message);
+    res.status(500).json({ message: "Failed to delete report" });
   }
-};
+});

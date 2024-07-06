@@ -104,7 +104,8 @@ export default function PostPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          postId: post._id,
+          referenceId: post._id, // Ensure this matches the backend's expectation
+          referenceType: "Post", // Adjust as per your logic (could be dynamic based on UI)
           content: reportContent,
           userId: userId,
         }),
@@ -114,10 +115,12 @@ export default function PostPage() {
         closeReportModal();
         showSuccessMessage();
       } else {
-        console.error("Report submission failed");
+        console.error("Report submission failed:", await response.json());
+        // Log more details about the response for debugging
       }
     } catch (error) {
       console.error("Error:", error);
+      // Handle network errors or exceptions during fetch
     }
   };
 
