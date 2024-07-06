@@ -55,33 +55,20 @@ export const getPosts = async (req, res, next) => {
         { content: { $regex: req.query.searchTerm, $options: "i" } },
       ];
     }
+
     const postsQuery = Post.find(queryOptions)
-      .populate("topicID") // Populate the 'topicID' field with the corresponding topic document
-      .populate("userId", "username email") // Populate the 'userId' field with 'username' and 'email'
-      .sort({ updatedAt: sortDirection })
+      .populate("topicID")
+      .populate("userId", "username email")
+      .sort({ createdAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
 
-    const totalPostsQuery = Post.countDocuments(queryOptions);
-
-    const now = new Date();
-    const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-
-    const lastMonthPostsQuery = Post.countDocuments({
-      createdAt: { $gte: oneMonthAgo },
-      ...queryOptions, // Include other query options
-    });
-
-    const [posts, totalPosts, lastMonthPosts] = await Promise.all([
-      postsQuery.exec(),
-      totalPostsQuery.exec(),
-      lastMonthPostsQuery.exec(),
-    ]);
+    const posts = await postsQuery.exec();
+    const totalPosts = await Post.countDocuments(queryOptions);
 
     res.status(200).json({
       posts,
       totalPosts,
-      lastMonthPosts,
     });
   } catch (error) {
     next(error);
@@ -122,4 +109,3 @@ export const updatepost = async (req, res, next) => {
     next(error);
   }
 };
-
