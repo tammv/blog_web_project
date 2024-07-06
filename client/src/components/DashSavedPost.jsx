@@ -4,12 +4,36 @@ import { useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
+function HighlightedText({ text, highlight }) {
+  if (!highlight.trim()) {
+    return <span>{text}</span>;
+  }
+
+  const regex = new RegExp(`(${highlight})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <span>
+      {parts.map((part, index) =>
+        part.toLowerCase() === highlight.toLowerCase() ? (
+          <span key={index} className="bg-yellow-200">
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </span>
+  );
+}
+
 export default function DashSavePost() {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [postIdToRemove, setPostIdToDelete] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -63,9 +87,22 @@ export default function DashSavePost() {
     }
   };
 
+  const filteredPosts = userPosts.filter(
+    (post) =>
+      post.postId.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.postId.topicID.nameOfTopic.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-      {userPosts.length > 0 ? (
+      <input
+        type="text"
+        placeholder="Search posts title or topic"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full p-2 mb-4 border border-gray-300 rounded"
+      />
+      {filteredPosts.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -76,7 +113,7 @@ export default function DashSavePost() {
               <Table.HeadCell>REMOVE</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-              {userPosts.map((savedpost) => (
+              {filteredPosts.map((savedpost) => (
                 <Table.Row
                   key={savedpost._id} // Add a unique key to each Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -87,8 +124,14 @@ export default function DashSavePost() {
                       <img src={savedpost.postId.image} alt={savedpost.postId.title} className="w-20 h-10 object-cover bg-gray-500" />
                     </Link>
                   </Table.Cell>
-                  <Table.Cell>{savedpost.postId.title}</Table.Cell>
-                  <Table.Cell>{savedpost.postId.topicID.nameOfTopic}</Table.Cell>
+                  <Table.Cell>
+                    <Link className="font-medium text-gray-900 dark:text-white" to={`/post/${savedpost.postId.slug}`}>
+                      <HighlightedText text={savedpost.postId.title} highlight={searchQuery} />
+                    </Link>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <HighlightedText text={savedpost.postId.topicID.nameOfTopic} highlight={searchQuery} />
+                  </Table.Cell>
                   <Table.Cell>
                     <span
                       onClick={() => {
