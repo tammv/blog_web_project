@@ -83,7 +83,9 @@ export default function DashSavePost() {
                 >
                   <Table.Cell>{new Date(savedpost.updatedAt).toLocaleDateString()}</Table.Cell>
                   <Table.Cell>
-                    <img src={savedpost.postId.image} alt={savedpost.postId.title} className="w-20 h-10 object-cover bg-gray-500" />
+                    <Link to={`/post/${savedpost.postId.slug}`}>
+                      <img src={savedpost.postId.image} alt={savedpost.postId.title} className="w-20 h-10 object-cover bg-gray-500" />
+                    </Link>
                   </Table.Cell>
                   <Table.Cell>{savedpost.postId.title}</Table.Cell>
                   <Table.Cell>{savedpost.postId.topicID.nameOfTopic}</Table.Cell>
