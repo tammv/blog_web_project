@@ -24,6 +24,7 @@ import UpdateVideo from "./pages/UpdateVideo";
 import CreateQuiz from "./pages/CreateQuiz";
 import QuizPage from "./pages/QuizPage";
 import DisplayQuestion from "./components/DisplayQuestion";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
         <Route path="/quiz/:quizId" element={<DisplayQuestion />}></Route>
         <Route path="/quiz" element={<QuizPage />}></Route>
+        <Route path="/success" element={<PaymentSuccess />} />
       </Routes>
       <Footer />
     </BrowserRouter>
