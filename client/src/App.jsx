@@ -25,6 +25,7 @@ import CreateQuiz from "./pages/CreateQuiz";
 import QuizPage from "./pages/QuizPage";
 import DisplayQuestion from "./components/DisplayQuestion";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import ScrollToTopButton from "./components/ScrollToTopButton";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -40,7 +41,6 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/blogs" element={<Blogs />} />
-
         <Route path="/video/:videoId" element={<VideoComponent />} />
         <Route path="/videos" element={<ListVideoComponent />} />
         <Route path="/createVideo" element={<CreateVideo />} />
@@ -65,6 +65,7 @@ export default function App() {
         <Route path="/success" element={<PaymentSuccess />} />
       </Routes>
       <Footer />
+      <ScrollToTopButton />
     </BrowserRouter>
   );
 }
