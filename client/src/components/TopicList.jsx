@@ -15,7 +15,6 @@ export default function TopicList() {
         }
         const data = await res.json();
 
-        // Add follow status to each topic if currentUser and currentUser._id exist
         if (currentUser && currentUser._id) {
           const topicsWithFollowStatus = data.map((topic) => ({
             ...topic,
@@ -25,12 +24,11 @@ export default function TopicList() {
         }
       } catch (error) {
         console.error("Error fetching topics:", error.message);
-        // Handle error (e.g., show error message to user)
       }
     };
 
     fetchTopics();
-  }, [currentUser]); // Include currentUser in dependency array
+  }, [currentUser]);
 
   const handleAddUserToTopic = async (topicId) => {
     try {
@@ -46,7 +44,6 @@ export default function TopicList() {
         throw new Error("Failed to follow topic");
       }
 
-      // Update follow status for the topic if currentUser and currentUser._id exist
       if (currentUser && currentUser._id) {
         setTopics((prevTopics) =>
           prevTopics.map((topic) => (topic._id === topicId ? { ...topic, isFollowed: true } : topic))
@@ -54,30 +51,57 @@ export default function TopicList() {
       }
     } catch (error) {
       console.error("Error following topic:", error.message);
-      // Handle error (e.g., show error message to user)
     }
   };
 
+  const handleRemoveUserFromTopic = async (topicId) => {
+    try {
+      const res = await fetch(`/api/topic/${topicId}/removeUser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: currentUser._id }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to unfollow topic");
+      }
+
+      if (currentUser && currentUser._id) {
+        setTopics((prevTopics) =>
+          prevTopics.map((topic) => (topic._id === topicId ? { ...topic, isFollowed: false } : topic))
+        );
+      }
+    } catch (error) {
+      console.error("Error unfollowing topic:", error.message);
+    }
+  };
+
+
   return (
-    <div className="flex overflow-x-auto gap-2">
+    <div className="flex overflow-x-auto gap-2 whitespace-nowrap">
       {topics.map((topic) => (
         <div key={topic._id} className="flex items-center gap-1">
           <Button
-            className={`flex items-center justify-between px-2 py-1 rounded-lg shadow-md transition duration-150 ${
-              topic.isFollowed
-                ? "bg-green-500 hover:bg-green-600 active:bg-green-700"
-                : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white"
-            }`}
+            className={`flex items-center px-2 py-1 rounded-lg shadow-md transition duration-150 ${topic.isFollowed
+              ? "bg-green-500 hover:bg-green-600 active:bg-green-700"
+              : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white"
+              }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (topic.isFollowed) {
+                handleRemoveUserFromTopic(topic._id);
+              } else {
+                handleAddUserToTopic(topic._id);
+              }
+            }}
           >
             {topic.nameOfTopic}
             <span
               className="ml-2 bg-white text-blue-500 rounded-full w-4 h-4 flex items-center justify-center hover:bg-gray-200 active:bg-gray-300 transition-all duration-150 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddUserToTopic(topic._id);
-              }}
             >
-              +
+              {topic.isFollowed ? '-' : '+'}
             </span>
           </Button>
         </div>
