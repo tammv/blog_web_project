@@ -76,3 +76,22 @@ export const addUserToTopic = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Remove a user from a topic's followers
+export const removeUserFromTopic = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const topic = await Topic.findById(req.params.id);
+    if (!topic) {
+      return res.status(404).json({ message: 'Topic not found' });
+    }
+    if (topic.followers.includes(userId)) {
+      topic.followers = topic.followers.filter((follower) => follower.toString() !== userId);
+      await topic.save();
+    }
+    res.status(200).json(topic);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

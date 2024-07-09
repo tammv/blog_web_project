@@ -65,8 +65,8 @@ export const deleteUser = async (req, res, next) => {
 export const signout = (req, res, next) => {
   try {
     res.clearCookie("access_token")
-        .status(200)
-        .json({ message: "User has been signed out" });
+      .status(200)
+      .json({ message: "User has been signed out" });
   } catch (error) {
     next(error);
   }
@@ -185,3 +185,23 @@ export const unbanUser = async (req, res) => {
   }
 };
 
+export const updateLevelToPremium = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        isPremium: true,
+        dateOfPre: new Date()
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+
+    res.status(200).json({ message: 'User level updated to Premium', user });
+  } catch (error) {
+    next(errorHandler(500, 'Error updating user level: ' + error.message));
+  }
+};

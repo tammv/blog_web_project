@@ -28,8 +28,8 @@ const PaymentPage = () => {
       orderCode: Number(String(Date.now()).slice(-6)),
       amount: 25000,
       description: "Thanh toan don hang",
-      returnUrl: "https://anji-5vgz.onrender.com",
-      cancelUrl: "https://anji-5vgz.onrender.com",
+      returnUrl: "https://devb-blog-web.onrender.com/success",
+      cancelUrl: "https://devb-blog-web.onrender.com",
     };
 
     try {

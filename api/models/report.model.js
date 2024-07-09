@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 const reportSchema = new mongoose.Schema(
   {
-    postId: {
+    referenceId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Post",
+      refPath: "referenceType", // Dynamic reference based on type field
+    },
+    referenceType: {
+      type: String,
+      required: true,
+      enum: ["Post", "Video"], // Allowed types
     },
     content: {
       type: String,

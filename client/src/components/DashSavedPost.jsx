@@ -1,8 +1,8 @@
 import { Modal, Table, Button } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 function HighlightedText({ text, highlight }) {
   if (!highlight.trim()) {
@@ -27,22 +27,22 @@ function HighlightedText({ text, highlight }) {
   );
 }
 
-export default function DashPosts() {
+export default function DashSavePost() {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [postIdToDelete, setPostIdToDelete] = useState("");
+  const [postIdToRemove, setPostIdToDelete] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
+        const res = await fetch(`/api/save/saved/${currentUser._id}`);
         const data = await res.json();
         if (res.ok) {
-          setUserPosts(data.posts);
-          if (data.posts.length < 9) {
+          setUserPosts(data);
+          if (data.length < 9) {
             setShowMore(false);
           }
         }
@@ -57,11 +57,11 @@ export default function DashPosts() {
   const handleShowMore = async () => {
     const startIndex = userPosts.length;
     try {
-      const res = await fetch(`/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`);
+      const res = await fetch(`/api/save/saved/${currentUser._id}?startIndex=${startIndex}`);
       const data = await res.json();
       if (res.ok) {
-        setUserPosts((prev) => [...prev, ...data.posts]);
-        if (data.posts.length < 9) {
+        setUserPosts((prev) => [...prev, ...data]);
+        if (data.length < 9) {
           setShowMore(false);
         }
       }
@@ -70,17 +70,17 @@ export default function DashPosts() {
     }
   };
 
-  const handleDeletePost = async () => {
+  const handleRemovePost = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(`/api/post/deletepost/${postIdToDelete}/${currentUser._id}`, {
+      const res = await fetch(`/api/save/removeSavedPost/${postIdToRemove}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (!res.ok) {
         console.log(data.message);
       } else {
-        setUserPosts((prev) => prev.filter((post) => post._id !== postIdToDelete));
+        setUserPosts((prev) => prev.filter((post) => post._id !== postIdToRemove));
       }
     } catch (error) {
       console.log(error.message);
@@ -89,8 +89,8 @@ export default function DashPosts() {
 
   const filteredPosts = userPosts.filter(
     (post) =>
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.topicID.nameOfTopic.toLowerCase().includes(searchQuery.toLowerCase())
+      post.postId.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.postId.topicID.nameOfTopic.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -106,48 +106,42 @@ export default function DashPosts() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>Date updated</Table.HeadCell>
-              <Table.HeadCell>Post image</Table.HeadCell>
-              <Table.HeadCell>Post title</Table.HeadCell>
-              <Table.HeadCell>Topic</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
-              <Table.HeadCell>Edit</Table.HeadCell>
+              <Table.HeadCell>DATE UPDATED</Table.HeadCell>
+              <Table.HeadCell>POST IMAGE</Table.HeadCell>
+              <Table.HeadCell>POST TITLE</Table.HeadCell>
+              <Table.HeadCell>TOPIC</Table.HeadCell>
+              <Table.HeadCell>REMOVE</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-              {filteredPosts.map((post) => (
+              {filteredPosts.map((savedpost) => (
                 <Table.Row
-                  key={post._id} // Add a unique key to each Table.Row
+                  key={savedpost._id} // Add a unique key to each Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
+                  <Table.Cell>{new Date(savedpost.updatedAt).toLocaleDateString()}</Table.Cell>
                   <Table.Cell>
-                    <Link to={`/post/${post.slug}`}>
-                      <img src={post.image} alt={post.title} className="w-20 h-10 object-cover bg-gray-500" />
+                    <Link to={`/post/${savedpost.postId.slug}`}>
+                      <img src={savedpost.postId.image} alt={savedpost.postId.title} className="w-20 h-10 object-cover bg-gray-500" />
                     </Link>
                   </Table.Cell>
                   <Table.Cell>
-                    <Link className="font-medium text-gray-900 dark:text-white" to={`/post/${post.slug}`}>
-                      <HighlightedText text={post.title} highlight={searchQuery} />
+                    <Link className="font-medium text-gray-900 dark:text-white" to={`/post/${savedpost.postId.slug}`}>
+                      <HighlightedText text={savedpost.postId.title} highlight={searchQuery} />
                     </Link>
                   </Table.Cell>
                   <Table.Cell>
-                    <HighlightedText text={post.topicID.nameOfTopic} highlight={searchQuery} />
+                    <HighlightedText text={savedpost.postId.topicID.nameOfTopic} highlight={searchQuery} />
                   </Table.Cell>
                   <Table.Cell>
                     <span
                       onClick={() => {
                         setShowModal(true);
-                        setPostIdToDelete(post._id);
+                        setPostIdToDelete(savedpost._id);
                       }}
                       className="font-medium text-red-500 hover:underline cursor-pointer"
                     >
-                      Delete
+                      Remove
                     </span>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link className="text-teal-500 hover:underline" to={`/update-post/${post._id}`}>
-                      Edit
-                    </Link>
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -160,7 +154,7 @@ export default function DashPosts() {
           )}
         </>
       ) : (
-        <p>You have no posts yet!</p>
+        <p>You have no saved posts yet!</p>
       )}
       <Modal show={showModal} onClose={() => setShowModal(false)} popup size="md">
         <Modal.Header />
@@ -168,10 +162,10 @@ export default function DashPosts() {
           <div className="text-center">
             <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
             <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this post?
+              Are you sure you want to remove this saved post?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={handleDeletePost}>
+              <Button color="failure" onClick={handleRemovePost}>
                 Yes, I'm sure
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>

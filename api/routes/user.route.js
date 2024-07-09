@@ -8,7 +8,8 @@ import {
   updateUser,
   makeAdmin,
   banUser,
-  unbanUser
+  unbanUser,
+  updateLevelToPremium
 } from '../controllers/user.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
 
@@ -23,6 +24,7 @@ router.get('/:userId', getUser);
 router.put('/:userId/admin', verifyToken, makeAdmin);
 router.put('/ban/:userId', verifyToken, banUser);
 router.put('/unban/:userId', verifyToken, unbanUser);
+router.post('/level/:id', updateLevelToPremium);
 
 
 export default router;
