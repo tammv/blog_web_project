@@ -99,7 +99,7 @@ export default function DashQuizzes() {
                     </span>
                   </Table.Cell>
                   <Table.Cell>
-                    <Link className="text-teal-500 hover:underline" to={`/update-quiz/${quiz._id}`}>
+                    <Link className="text-teal-500 hover:underline" to={`/quiz/${quiz._id}`}>
                       Edit
                     </Link>
                   </Table.Cell>

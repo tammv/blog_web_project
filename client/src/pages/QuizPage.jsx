@@ -29,7 +29,7 @@ export default function QuizPage() {
         };
         
         fetchQuizzes();
-    },[]);
+    },[currentUser._id]);
 
     if (loading)
         return (
@@ -40,8 +40,8 @@ export default function QuizPage() {
     
 
     return (
-      <div className="flex gap-10 justify-evenly bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-        <div className="pt-6">
+      <div className="flex gap-10 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+        <div className="pl-6 py-6">
           <Sidebar className="w-full md:w-60">
             <Sidebar.Items>
               <Sidebar.ItemGroup className="flex flex-col gap-1">
@@ -66,7 +66,7 @@ export default function QuizPage() {
             </Sidebar.Items>
           </Sidebar>
         </div>
-        <div className="pt-6 pl-9 flex flex-col gap-4">
+        <div className="pr-10 py-6 pl-9 w-full flex flex-col gap-4">
           {quizzesData.map((quiz) => (
               <div className="gap-6" key={quiz._id}>
                 <Link to={`${quiz._id}`}>

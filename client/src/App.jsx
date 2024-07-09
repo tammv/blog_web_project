@@ -23,7 +23,8 @@ import CreateVideo from "./pages/CreateVideo";
 import UpdateVideo from "./pages/UpdateVideo";
 import CreateQuiz from "./pages/CreateQuiz";
 import QuizPage from "./pages/QuizPage";
-import DisplayQuestion from "./components/DisplayQuestion";
+import QuizDetail from "./pages/QuizDetail";
+import QuizGame from "./pages/QuizGame";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -59,8 +60,9 @@ export default function App() {
         )}
         <Route path="/create-quiz" element={<CreateQuiz />}></Route>
         <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
-        <Route path="/quiz/:quizId" element={<DisplayQuestion />}></Route>
         <Route path="/quiz" element={<QuizPage />}></Route>
+        <Route path="/quiz/:quizId" element={<QuizDetail />}></Route>
+        <Route path="/game/quiz/:quizId" element={<QuizGame/>}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>

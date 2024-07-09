@@ -61,7 +61,7 @@ export const getAllQuiz = async (req, res, next) => {
 
 export const getQuizById = async (req, res) => {
   try {
-    const quiz = await Quiz.findById(req.params.quizId).populate('questions').populate('topicID');
+    const quiz = await Quiz.findById(req.params.quizId).populate('questions').populate('topicID').populate("userId", 'username email profilePicture');
     if (!quiz) {
       return res.status(404).json({ message: 'Quiz not found' });
     }
@@ -96,12 +96,11 @@ export const createQuiz = async (req, res) => {
 };
 
 export const createQuestion = async (req, res) => {
+  console.log(req.params.quizId);
   try {
     const newQuestion = new Question(req.body);
     const savedQuestion = await newQuestion.save();
-
     const quiz = await Quiz.findById(req.params.quizId);
-
     if (!quiz) {
       return res.status(404).send('Quiz not found');
     }
