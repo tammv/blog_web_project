@@ -33,7 +33,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <ScrollToTop />
+      <ScrollToTopButton />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -64,7 +64,7 @@ export default function App() {
         <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
         <Route path="/quiz" element={<QuizPage />}></Route>
         <Route path="/quiz/:quizId" element={<QuizDetail />}></Route>
-        <Route path="/game/quiz/:quizId" element={<QuizGame/>}></Route>
+        <Route path="/game/quiz/:quizId" element={<QuizGame />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>
