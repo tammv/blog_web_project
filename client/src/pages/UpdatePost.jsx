@@ -34,7 +34,10 @@ export default function UpdatePost() {
         if (res.ok) {
           const post = data.posts[0];
           setFormData({
-            ...post,
+            _id: post._id,
+            title: post.title,
+            content: post.content,
+            image: post.image,
             topic: post.topicID ? post.topicID.nameOfTopic : "", // Set the topic name
           });
         }
@@ -140,11 +143,11 @@ export default function UpdatePost() {
             id="title"
             className="flex-1"
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            value={formData.title}
+            value={formData.title || ""}
           />
           <select onChange={(e) => setFormData({ ...formData, topic: e.target.value })} value={formData.topic || ""}>
-            <option value={formData.topic} disabled={!formData.topic}>
-              {formData.topic}
+            <option value="" disabled>
+              Select a Topic
             </option>
             {topics.map((topic) => (
               <option key={topic._id} value={topic.nameOfTopic}>
@@ -176,7 +179,7 @@ export default function UpdatePost() {
         {formData.image && <img src={formData.image} alt="upload" className="w-full h-72 object-cover" />}
         <ReactQuill
           theme="snow"
-          value={formData.content}
+          value={formData.content || ""}
           placeholder="Write something..."
           className="h-72 mb-12"
           required
