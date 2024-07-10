@@ -1,5 +1,5 @@
 import express from "express";
-import {getAllQuiz, getQuizById, createQuiz, createQuestion, updateQuizById, updateQuestionById, deleteQuizById, deleteQuestionById} from "../controllers/quiz.controller.js"
+import {getAllQuiz, getQuizById, createQuiz, createQuestion, updateQuizById, updateQuestionById, deleteQuizById, deleteQuizByUser, deleteQuestionById} from "../controllers/quiz.controller.js"
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
@@ -14,7 +14,7 @@ router.put('/:quizId', verifyToken, updateQuizById);
 router.put('/:quizId/question/:questionId', verifyToken, updateQuestionById);
 
 router.delete('/:quizId', verifyToken, deleteQuizById);
-router.delete('/:quizId/:userId', verifyToken, deleteQuizById);
+router.delete('/:quizId/:userId', verifyToken, deleteQuizByUser);
 router.delete('/:quizId/question/:questionId', verifyToken, deleteQuestionById);
 
 export default router;

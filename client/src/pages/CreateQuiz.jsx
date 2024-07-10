@@ -9,7 +9,7 @@ function CreateQuiz() {
   if (quizId)
     return (
       <div className="h-auto w-auto mx-40 py-6 bg-orange-200">
-        <QuestionComp/>
+        <QuestionComp question={null}/>
       </div>
       );
 

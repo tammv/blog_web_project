@@ -34,8 +34,6 @@ export default function Dashboard() {
       {tab === "savedpost" && <DashSavedPost />}
       {/* Videos... */}
       {tab === "videos" && <DashVideos />}
-      
-      {tab === "quizzes" && <DashQuizzes/>}
     </div>
   );
 }
