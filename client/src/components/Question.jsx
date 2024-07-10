@@ -1,4 +1,5 @@
 export default function Question({ question }) {
+
     if (!question) {
       return <div>Question data is missing.</div>;
     }
@@ -24,5 +25,3 @@ export default function Question({ question }) {
       </div>
     );
   }
-  
-  

@@ -14,7 +14,6 @@ import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost";
 import PostPage from "./pages/PostPage";
-import ScrollToTop from "./components/ScrollToTop";
 import Search from "./pages/Search";
 import PaymentPage from "./pages/Payment";
 import VideoComponent from "./pages/Video";
@@ -42,6 +41,7 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/blogs" element={<Blogs />} />
+
         <Route path="/video/:videoId" element={<VideoComponent />} />
         <Route path="/videos" element={<ListVideoComponent />} />
         <Route path="/createVideo" element={<CreateVideo />} />
@@ -65,9 +65,9 @@ export default function App() {
         <Route path="/quiz/:quizId" element={<QuizDetail />}></Route>
         <Route path="/game/quiz/:quizId" element={<QuizGame/>}></Route>
         <Route path="/success" element={<PaymentSuccess />} />
+
       </Routes>
       <Footer />
-      <ScrollToTopButton />
     </BrowserRouter>
   );
 }
