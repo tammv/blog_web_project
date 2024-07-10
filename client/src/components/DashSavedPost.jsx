@@ -106,7 +106,7 @@ export default function DashSavePost() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>DATE UPDATED</Table.HeadCell>
+              <Table.HeadCell>DATE SAVED</Table.HeadCell>
               <Table.HeadCell>POST IMAGE</Table.HeadCell>
               <Table.HeadCell>POST TITLE</Table.HeadCell>
               <Table.HeadCell>TOPIC</Table.HeadCell>
