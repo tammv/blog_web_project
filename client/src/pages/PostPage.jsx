@@ -18,9 +18,8 @@ export default function PostPage() {
   const [isReportSuccess, setIsReportSuccess] = useState(false);
   const [userId, setUserId] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
-  const [isPremium, setIsPremium] = useState(currentUser.isPremium); // State to manage premium status
+  const [isPremium, setIsPremium] = useState(false); // State to manage premium status
   const [isSaveSuccess, setIsSaveSuccess] = useState(false); // State to manage save success
-
 
   useEffect(() => {
     // Dynamic import jwt-decode
@@ -32,6 +31,12 @@ export default function PostPage() {
     };
     importJwtDecode();
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      setIsPremium(currentUser.isPremium);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchPost = async () => {

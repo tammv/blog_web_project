@@ -73,7 +73,7 @@ const ListVideo = () => {
         </div>
       ))}
 
-      <div className="flex justify-center mt-10">
+      <div className="flex  text-center justify-center mt-10 mr-30">
         <Button color="blue" onClick={handlePreviousPage} disabled={currentPage === 1} className="mx-1">
           Previous
         </Button>

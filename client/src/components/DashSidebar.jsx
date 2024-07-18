@@ -1,5 +1,15 @@
 import { Sidebar } from "flowbite-react";
-import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiAnnotation, HiChartPie, HiClipboardList, HiArchive, HiVideoCamera  } from "react-icons/hi";
+import {
+  HiUser,
+  HiArrowSmRight,
+  HiDocumentText,
+  HiOutlineUserGroup,
+  HiAnnotation,
+  HiChartPie,
+  HiClipboardList,
+  HiArchive,
+  HiVideoCamera,
+} from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,10 +63,10 @@ export default function DashSidebar() {
                 </Sidebar.Item>
               </Link>
               <Link to="/dashboardadmin?tab=quizzesadmin">
-              <Sidebar.Item active={tab === "quizzes"} icon={HiClipboardList} as="div">
-                Quiz
-              </Sidebar.Item>
-            </Link>
+                <Sidebar.Item active={tab === "quizzes"} icon={HiClipboardList} as="div">
+                  Quiz
+                </Sidebar.Item>
+              </Link>
               <Link to="/dashboardadmin?tab=videosadmin">
                 <Sidebar.Item active={tab === "videos"} icon={HiVideoCamera} as="div">
                   Videos
@@ -84,37 +94,37 @@ export default function DashSidebar() {
               </Link>
             </>
           ) : (
-          <Link to="/dashboard?tab=profile">
-            <Sidebar.Item
-              active={tab === "profile"}
-              icon={HiUser}
-              label={currentUser.isAdmin ? "Admin" : currentUser.isPremium ? "User Premium" : "User"}
-              labelColor="dark"
-              as="div"
-            >
-              Profile
-            </Sidebar.Item>
-            <Link to="/dashboard?tab=posts">
-              <Sidebar.Item active={tab === "posts"} icon={HiDocumentText} as="div">
-                Posts
+            <Link to="/dashboard?tab=profile">
+              <Sidebar.Item
+                active={tab === "profile"}
+                icon={HiUser}
+                label={currentUser.isAdmin ? "Admin" : currentUser.isPremium ? "Premium" : "User"}
+                labelColor="dark"
+                as="div"
+              >
+                Profile
               </Sidebar.Item>
+              <Link to="/dashboard?tab=posts">
+                <Sidebar.Item active={tab === "posts"} icon={HiDocumentText} as="div">
+                  Posts
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=videos">
+                <Sidebar.Item active={tab === "videos"} icon={HiVideoCamera} as="div">
+                  Videos
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=quizzes">
+                <Sidebar.Item active={tab === "quizzes"} icon={HiClipboardList} as="div">
+                  Quiz
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=savedpost">
+                <Sidebar.Item active={tab === "savedpost"} icon={HiArchive} as="div">
+                  Saved Post
+                </Sidebar.Item>
+              </Link>
             </Link>
-            <Link to="/dashboard?tab=videos">
-              <Sidebar.Item active={tab === "videos"} icon={HiVideoCamera} as="div">
-                Videos
-              </Sidebar.Item>
-            </Link>
-            <Link to="/dashboard?tab=quizzes">
-              <Sidebar.Item active={tab === "quizzes"} icon={HiClipboardList} as="div">
-                Quiz
-              </Sidebar.Item>
-            </Link>
-            <Link to="/dashboard?tab=savedpost">
-              <Sidebar.Item active={tab === "savedpost"} icon={HiArchive} as="div">
-                Saved Post
-              </Sidebar.Item>
-            </Link>
-          </Link>
           )}
           <Sidebar.Item icon={HiArrowSmRight} className="cursor-pointer" onClick={handleSignout} as="div">
             Sign Out

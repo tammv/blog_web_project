@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Modal, Textarea } from "flowbite-react"; // Assuming 'flowbite-react' provides the Button and Modal components
+import { useSelector } from "react-redux"; // Import useSelector to get current user information from the Redux store
 
 const VideoComponent = () => {
   const { videoId } = useParams();
@@ -10,7 +11,7 @@ const VideoComponent = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportContent, setReportContent] = useState("");
   const [isReportSuccess, setIsReportSuccess] = useState(false);
-  const [userId, setUserId] = useState(null); // Assuming you have userId from context or authentication
+  const { currentUser } = useSelector((state) => state.user); // Get current user from Redux store
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -57,7 +58,7 @@ const VideoComponent = () => {
           referenceId: video._id, // Assuming video._id is the ID of the video
           referenceType: "Video", // Set the referenceType to "Video" for video reports
           content: reportContent,
-          userId: userId,
+          userId: currentUser._id, // Assuming currentUser._id is the ID of the current user
         }),
       });
 
@@ -95,11 +96,13 @@ const VideoComponent = () => {
       <div className="col-span-2">
         <h2 className="text-2xl font-bold mb-4">{video.title}</h2>
         <p className="text-slate-200 mb-4">{video.content}</p>
-        <div className="flex justify-end">
-          <Button color="red" onClick={openReportModal}>
-            Report Video
-          </Button>
-        </div>
+        {currentUser && currentUser.isAdmin && (
+          <div className="flex justify-end">
+            <Button color="red" onClick={openReportModal}>
+              Report Video
+            </Button>
+          </div>
+        )}
       </div>
 
       <Modal show={isReportModalOpen} onClose={closeReportModal}>

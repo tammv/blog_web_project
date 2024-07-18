@@ -71,7 +71,7 @@ const PaymentPage = () => {
         </div>
         <div className="mb-6">
           <p className="text-lg font-bold text-gray-800">Thanh toán Premium</p>
-          <p className="text-lg font-bold text-gray-800">Giá tiền: 25000 VNĐ</p>
+          <p className="text-lg font-bold text-gray-800">Giá tiền: 25.000 VNĐ</p>
         </div>
         <button
           onClick={handleCreatePaymentLink}
