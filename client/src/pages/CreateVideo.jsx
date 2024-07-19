@@ -1,15 +1,17 @@
-import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
+import { Alert, Button, FileInput, TextInput } from "flowbite-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 
 export default function CreateVideo() {
   const [file, setFile] = useState(null);
+  const [excelFile, setExcelFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
@@ -41,7 +43,6 @@ export default function CreateVideo() {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log(downloadURL);
             setImageUploadProgress(null);
             setImageUploadError(null);
             setFormData({ ...formData, img: downloadURL });
@@ -51,7 +52,41 @@ export default function CreateVideo() {
     } catch (error) {
       setImageUploadError("Image upload failed");
       setImageUploadProgress(null);
-      console.log(error);
+    }
+  };
+
+  const handleUploadExcel = async () => {
+    try {
+      if (!excelFile) {
+        setImageUploadError("Please select an Excel file");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+        const res = await fetch("/api/import/importVideos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          setImageUploadError(result.message);
+        } else {
+          setImageUploadError(null);
+          alert("Excel file uploaded successfully!");
+        }
+      };
+      reader.readAsArrayBuffer(excelFile);
+    } catch (error) {
+      setImageUploadError("Excel upload failed");
     }
   };
 
@@ -70,12 +105,8 @@ export default function CreateVideo() {
         setPublishError(data.message);
         return;
       }
-
-      if (res.ok) {
-        setPublishError(null);
-        console.log(data);
-        navigate(`/video/${data._id}`);
-      }
+      setPublishError(null);
+      navigate(`/video/${data._id}`);
     } catch (error) {
       setPublishError("Something went wrong");
     }
@@ -83,8 +114,8 @@ export default function CreateVideo() {
 
   return (
     <div className={`p-3 max-w-3xl mx-auto min-h-screen ${darkMode && "dark"} dark-container`}>
-      <h1 className="text-center text-3xl my-7 font-semibold  ">Create a video</h1>
-      <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+      <h1 className="text-center text-3xl my-7 font-semibold">Create a video</h1>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
             type="text"
@@ -122,12 +153,23 @@ export default function CreateVideo() {
             )}
           </Button>
         </div>
+        <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
+          <FileInput type="file" accept=".xlsx, .xls" onChange={(e) => setExcelFile(e.target.files[0])} />
+          <Button
+            type="button"
+            gradientDuoTone="purpleToBlue"
+            size="sm"
+            outline
+            onClick={handleUploadExcel}
+          >
+            Upload Excel
+          </Button>
+        </div>
         {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
-        {formData.image && <img src={formData.image} alt="upload" className="w-full h-72 object-cover" />}
         <ReactQuill
           theme="snow"
           placeholder="Write something..."
-          className={`h-72 mb-12 `}
+          className={`h-72 mb-12`}
           required
           onChange={(value) => {
             var startIndex = value.indexOf('>') + 1;

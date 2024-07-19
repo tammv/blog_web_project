@@ -126,6 +126,14 @@ export const signin = async (req, res, next) => {
     if (!validPassword) {
       return next(errorHandler(400, "Invalid password"));
     }
+
+    // Check if the current date exceeds dateOfPre
+    const currentDate = new Date();
+    if (validUser.dateOfPre && currentDate > validUser.dateOfPre) {
+      validUser.isPremium = false;
+      await validUser.save();
+    }
+
     if (validUser.isBan) {
       return next(errorHandler(401, "Your account has been locked due to violating the blog's terms"));
     }

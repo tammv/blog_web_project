@@ -187,11 +187,14 @@ export const unbanUser = async (req, res) => {
 
 export const updateLevelToPremium = async (req, res, next) => {
   try {
+    const nextMonth = new Date();
+    nextMonth.setDate(nextMonth.getDate() + 30);
+
     const user = await User.findByIdAndUpdate(
       req.params.id,
       {
         isPremium: true,
-        dateOfPre: new Date()
+        dateOfPre: nextMonth
       },
       { new: true }
     );

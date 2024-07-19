@@ -14,6 +14,8 @@ import videoRoutes from "./routes/video.route.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 
+import importRoutes from "./routes/import.route.js"; 
+
 dotenv.config();
 
 mongoose
@@ -45,6 +47,8 @@ app.use("/api/quiz", quizRoutes);
 app.use("/api/save", savePostRoutes);
 
 app.use("/api/video", videoRoutes);
+
+app.use("/api/import", importRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
