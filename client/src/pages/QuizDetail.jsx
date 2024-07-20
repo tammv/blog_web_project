@@ -21,6 +21,7 @@ export default function QuizDetail() {
         const data = await res.json();
         setQuizzesStores(data);
         setLoading(false);
+        console.log(data);
       } catch (error) {
         console.error("Error fetching topics:", error);
       }
@@ -34,6 +35,7 @@ export default function QuizDetail() {
       const data = await res.json();
       setQuizzesStores(data);
       setLoading(false);
+      console.log(quizzesStores.questions.level);
     } catch (error) {
       console.error("Error fetching topics:", error);
     }
@@ -110,9 +112,16 @@ export default function QuizDetail() {
         <div className="p-4 rounded-lg bg-slate-50 my-4 drop-shadow-md hover:drop-shadow-xl" key={index}>
           <div className="drop-shadow-2xl">
             <div className="flex justify-between h-5 mb-6">
-              <div className="flex gap-2 items-center">
-                <FaRegCheckSquare/>
-                <span>{index+1}. Nhiều lựa chọn</span>
+              <div className="flex gap-10 items-center">
+                <div className="flex gap-2 items-center">
+                  <FaRegCheckSquare/>
+                  <span>{index+1}. Nhiều lựa chọn</span>
+                </div>
+                <div className="flex">
+                  <span className={` rounded-md px-2 text-white bg-${item.level === "easy"?"green-500": item.level === "medium" ? "yellow-300": "red-600" }`}>
+                    {item.level.charAt(0).toUpperCase() + item.level.slice(1)}
+                  </span>
+                </div>
               </div>
               <div className="flex gap-6">
                 <FaRegEdit onClick={() => handleEditQuestion(item._id)}/>

@@ -10,6 +10,11 @@ const questionScheme = new mongoose.Schema(
       type: String,
       required: true
     }],
+    level:{
+      type: String,
+      require: false,
+      default: "easy"
+    },
     correctAnswerIndex: {
       type: [Number],
       required: true,

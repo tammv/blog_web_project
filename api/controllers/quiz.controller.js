@@ -106,7 +106,6 @@ export const createQuestion = async (req, res) => {
     }
     quiz.questions.push(savedQuestion._id);
       await quiz.save();
-
     res.status(201)
         .json(savedQuestion);
   } catch (error) {

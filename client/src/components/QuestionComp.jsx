@@ -1,4 +1,4 @@
-import { Button, Checkbox, Textarea, Spinner } from "flowbite-react";
+import { Button, Checkbox, Textarea,Select, Spinner } from "flowbite-react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoAddSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
@@ -9,6 +9,7 @@ function QuestionComp(question) {
   const [questionText, setQuestionText] = useState("");
   const [options, setOptions] = useState([{text: "", checked: false}, {text: "", checked: false}]);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState([]);
+  const [selectedLevel, setSelectLevel] = useState("");
   const { quizId } = useParams();
 
   useEffect(() => {
@@ -25,6 +26,7 @@ function QuestionComp(question) {
           }));
           setOptions(formattedOptions);
           setCorrectAnswerIndex(checkData);
+          setSelectLevel(question.question.level)
         }
       } catch (error) {
         console.error("Error fetching topics:", error);
@@ -79,7 +81,10 @@ function QuestionComp(question) {
       text: questionText,
       options: options.map((option) => option.text),
       correctAnswerIndex: correctAnswerIndex,
+      level: selectedLevel
     };
+
+    console.log(questionData);
 
     try {
       const res = await fetch(`/api/quiz/${quizId}/question`, {
@@ -115,6 +120,7 @@ function QuestionComp(question) {
       text: questionText,
       options: options.filter((option) => option.text !== '' && option.text !== null).map((option) => option.text),
       correctAnswerIndex: correctAnswerIndex,
+      level: selectedLevel
     };
 
 
@@ -158,6 +164,19 @@ function QuestionComp(question) {
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
           />
+        </div>
+        <div className="flex justify-center my-2">
+          <Select onChange={(e) => { setSelectLevel(e.target.value); }}
+                  value={selectedLevel}
+                  required
+                >
+                  <option value="" disabled>
+                    Select a Level Question
+                  </option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="difficult">Difficult</option>
+          </Select>
         </div>
         <div className="flex flex-col md:flex-row w-full h-full gap-2">
           <div className="grid py-4 mx-2 md:grid-flow-col md:auto-cols-fr md:w-auto lg:w-full h-full gap-2">
