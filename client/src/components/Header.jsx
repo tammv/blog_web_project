@@ -1,7 +1,7 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon, FaSun } from "react-icons/fa";
+import { FaMoon, FaSun, FaComment } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice.js";
 import { signoutSuccess } from "../redux/user/userSlice.js";
@@ -11,6 +11,12 @@ export default function Header() {
   const dispatch = useDispatch(); // Add this line
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme); // Add this line
+
+  const navigate = useNavigate();
+
+  const handleChatClick = () => {
+    navigate('/rooms'); 
+  };
 
   const handleSignout = async () => {
     try {
@@ -46,6 +52,9 @@ export default function Header() {
         <AiOutlineSearch />
       </Button>
       <div className="flex gap-2 md:order-2">
+      <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={handleChatClick}>
+          <FaComment />
+        </Button>
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={() => dispatch(toggleTheme())}>
           {" "}
           {theme === "light" ? <FaSun /> : <FaMoon />}

@@ -26,48 +26,56 @@ import QuizDetail from "./pages/QuizDetail";
 import QuizGame from "./pages/QuizGame";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import ScrollToTopButton from "./components/ScrollToTopButton";
+import RoomRoutes from "./chatRoom/RoomRoutes";
+import AuthContextProvider from './redux/auth-context';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
 
   return (
     <BrowserRouter>
-      <ScrollToTopButton />
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/blogs" element={<Blogs />} />
+      <AuthContextProvider>
+        <ToastContainer />
+        <ScrollToTopButton />
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/rooms/*" element={<RoomRoutes />} />
 
-        <Route path="/video/:videoId" element={<VideoComponent />} />
-        <Route path="/videos" element={<ListVideoComponent />} />
-        <Route path="/createVideo" element={<CreateVideo />} />
-        <Route path="/post/:postSlug" element={<PostPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        {currentUser && currentUser.isAdmin ? (
-          <Route element={<OnlyAdminPrivateRoute />}>
-            <Route path="/dashboardadmin" element={<DashboardAdmin />} />
-          </Route>
-        ) : (
-          <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/create-post" element={<CreatePost />} />
-            <Route path="/update-post/:postId" element={<UpdatePost />} />
-            <Route path="/update-video/:videoId" element={<UpdateVideo />} />
-          </Route>
-        )}
-        <Route path="/create-quiz" element={<CreateQuiz />}></Route>
-        <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
-        <Route path="/quiz" element={<QuizPage />}></Route>
-        <Route path="/quiz/:quizId" element={<QuizDetail />}></Route>
-        <Route path="/game/quiz/:quizId" element={<QuizGame/>}></Route>
-        <Route path="/success" element={<PaymentSuccess />} />
+          <Route path="/video/:videoId" element={<VideoComponent />} />
+          <Route path="/videos" element={<ListVideoComponent />} />
+          <Route path="/createVideo" element={<CreateVideo />} />
+          <Route path="/post/:postSlug" element={<PostPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          {currentUser && currentUser.isAdmin ? (
+            <Route element={<OnlyAdminPrivateRoute />}>
+              <Route path="/dashboardadmin" element={<DashboardAdmin />} />
+            </Route>
+          ) : (
+            <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/create-post" element={<CreatePost />} />
+              <Route path="/update-post/:postId" element={<UpdatePost />} />
+              <Route path="/update-video/:videoId" element={<UpdateVideo />} />
+            </Route>
+          )}
+          <Route path="/create-quiz" element={<CreateQuiz />}></Route>
+          <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
+          <Route path="/quiz" element={<QuizPage />}></Route>
+          <Route path="/quiz/:quizId" element={<QuizDetail />}></Route>
+          <Route path="/game/quiz/:quizId" element={<QuizGame />}></Route>
+          <Route path="/success" element={<PaymentSuccess />} />
 
-      </Routes>
-      <Footer />
+        </Routes>
+        <Footer />
+      </AuthContextProvider>
     </BrowserRouter>
   );
 }

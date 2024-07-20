@@ -1,0 +1,93 @@
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    flex: 0.35;
+}
+.sidebar__header{
+    display: flex;
+    justify-content: space-between;
+    padding:10px 20px;
+    border-right: 1px solid lightgray;
+}
+
+
+.sidebar__headerRight{
+    display: flex;
+    margin-left: 0;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar__search{
+    display: flex;
+    align-items: center;
+    height: 39px;
+    padding: 20px;
+}
+
+
+.sidebar__searchContainer{
+    display: flex;
+    align-items: center;
+    height: 35px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.sidebar__search_bottom{
+    height: 15px;
+    width: 100%;
+    background-color: 1px solid lightgray;
+}
+
+.sidebar__searchContainer > input {
+    border: none;
+    margin-left: 10px;
+    padding: 10px;
+    flex: 1;
+}
+
+.sidebar__searchContainer > .MuiSvgIcon-root{
+    color: gray;
+    padding: 10px;
+}
+
+.sidebar__chats{
+    background-color: white;
+    flex: 1;
+    overflow-y: scroll; 
+}
+
+
+::-webkit-scrollbar {
+    width: 6px!important;
+    height: 6px!important;
+}
+::-webkit-scrollbar-thumb {
+    background-color: hsla(0,0%,100%,.16);
+}
+::-webkit-scrollbar-track {
+    background-color: initial;
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.2);
+}
+
+::-webkit-scrollbar-track {
+    background: hsla(0,0%,100%,.1);
+}
+
+@media (max-width: 600px){
+    .sidebar{
+        width: 35%;
+    }
+    .sidebar__header{
+        display: block;
+    }
+    .sidebar__searchContainer > input{
+        width: 35%;
+    }
+}
+
+
+
