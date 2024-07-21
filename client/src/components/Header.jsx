@@ -15,7 +15,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const handleChatClick = () => {
-    navigate('/rooms'); 
+    navigate("/rooms");
   };
 
   const handleSignout = async () => {
@@ -43,16 +43,12 @@ export default function Header() {
         </span>
         Blog
       </Link>
-      {currentUser && !currentUser.isAdmin && (
-        <form>
-          <TextInput type="text" placeholder="Search..." rightIcon={AiOutlineSearch} className="hidden lg:inline" />
-        </form>
-      )}
+
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
       </Button>
       <div className="flex gap-2 md:order-2">
-      <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={handleChatClick}>
+        <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={handleChatClick}>
           <FaComment />
         </Button>
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={() => dispatch(toggleTheme())}>
