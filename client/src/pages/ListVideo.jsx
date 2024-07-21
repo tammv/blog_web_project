@@ -2,13 +2,38 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "flowbite-react"; // Assuming you use 'flowbite-react' for styling
 
+// HighlightedText component to highlight the search query
+function HighlightedText({ text, highlight }) {
+  if (!highlight.trim()) {
+    return <span>{text}</span>;
+  }
+
+  const regex = new RegExp(`(${highlight})`, "gi");
+  const parts = text.split(regex);
+
+  return (
+    <span>
+      {parts.map((part, index) =>
+        part.toLowerCase() === highlight.toLowerCase() ? (
+          <span key={index} className="bg-yellow-200">
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </span>
+  );
+}
+
 const ListVideo = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const videosPerPage = 8; // Number of videos per page
+  const [videosPerPage] = useState(8); // Number of videos per page
+  const [searchQuery, setSearchQuery] = useState(""); // Add search query state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,27 +78,48 @@ const ListVideo = () => {
     }
   };
 
+  // Filter videos based on search query
+  const filteredVideos = videos.filter((video) =>
+    video.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (videos.length === 0) return <div>No videos found</div>;
 
   return (
-    <div className="p-6 shadow-md grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
-      {videos.map((video, index) => (
-        <div
-          key={index}
-          className="border border-gray-300 rounded-lg overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-200 active:scale-95"
-          onClick={() => handleCardClick(video._id)}
-        >
-          <img src={video.img} alt={video.title} className="w-full h-48 object-cover" />
-          <div className="p-4">
-            <h2 className="font-bold text-xl mb-2">{video.title}</h2>
-            <p className="text-gray-700 text-base">{video.userId.username}</p>
-          </div>
+    <div className="p-6 shadow-md">
+      {/* Always display the search input */}
+      <input
+        type="text"
+        placeholder="Search videos by title"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full p-2 mb-4 border border-gray-300 rounded"
+      />
+      
+      {filteredVideos.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
+          {filteredVideos.map((video) => (
+            <div
+              key={video._id}
+              className="border border-gray-300 rounded-lg overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-200 active:scale-95"
+              onClick={() => handleCardClick(video._id)}
+            >
+              <img src={video.img} alt={video.title} className="w-full h-48 object-cover" />
+              <div className="p-4">
+                <h2 className="font-bold text-xl mb-2">
+                  <HighlightedText text={video.title} highlight={searchQuery} />
+                </h2>
+                <p className="text-gray-700 text-base">{video.userId.username}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      ) : (
+        <div className="text-center">No videos found</div>
+      )}
 
-      <div className="flex  text-center justify-center mt-10 mr-30">
+      <div className="flex text-center justify-center mt-10">
         <Button color="blue" onClick={handlePreviousPage} disabled={currentPage === 1} className="mx-1">
           Previous
         </Button>
