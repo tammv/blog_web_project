@@ -21,7 +21,7 @@ export default function QuizDetail() {
           setCheckPermissions(true);
         }
       } catch (error) {
-        console.error("Error fetching quiz: ", error);
+        console.error("Error fetching quizz: ", error);
       }
       setLoading(false);
     };

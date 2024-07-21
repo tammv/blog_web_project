@@ -23,7 +23,7 @@ export default function QuizPage() {
             }
             setLoading(false);
           } catch (error) {
-            console.error("Error fetching topics:", error);
+            console.error("Error fetching quizz:", error);
             setLoading(false);
           }
         };
@@ -39,7 +39,8 @@ export default function QuizPage() {
     );
     
     return (
-      <main className="flex flex-col max-w-6xl mx-auto p-5">
+      <main className="flex flex-col max-w-3xl mx-auto p-5">
+        <h1 className="text-3xl text-center font-bold mb-10">All Quizzes</h1>
         <div className="flex flex-auto justify-center gap-10 backdrop-blur-lg">
           {currentUser && (currentUser.isPremium || currentUser.isAdmin) ? (
             <Button>

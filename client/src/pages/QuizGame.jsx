@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import { Spinner, Button} from "flowbite-react";
+import { Spinner} from "flowbite-react";
 import QuizResult from './QuizResult';
 
 const QuizGame = () => {
@@ -26,7 +26,7 @@ const QuizGame = () => {
           setError(data.message);
         }
       } catch (error) {
-        console.error("Error fetching quiz:", error);
+        console.error("Error fetching quizz:", error);
         setError("An error occurred while fetching the quiz.");
       } finally {
         setIsLoading(false);
@@ -95,25 +95,40 @@ const QuizGame = () => {
       ) : error ? (
         <p>Error: {error}</p>
       ) : currentQuestion ? (
-        <div className='rounded-2xl bg-slate-300 p-3 w-full'>
-          <h2 className='item-center'>{currentQuestion.text}</h2>
-          <ul>
-            {currentQuestion.options.map((option, index) => (
-              <li className='flex flex-row item-center w-full' key={index}>
-                <input
-                  className='item-center'
-                  type={questions[currentQuestionIndex].correctAnswerIndex.length > 1 ? "checkbox" : "radio"}
-                  id={`option-${index}`}
-                  name={`option-${index}`}
-                  value={option}
-                  checked={selectedOptions.includes(option)}
-                  onChange={handleOptionChange}
-                />
-                <label className='w-full' htmlFor={`option-${index}`}>{option}</label>
-              </li>
-            ))}
-          </ul>
-          {currentQuestion.correctAnswerIndex.length > 1 && <Button className='mt-4 w-full' onClick={handleNextQuestion}>Next Question</Button>}
+        <div className="max-w-5xl h-full">
+          <div className="select-none w-full h-full">
+            <div className="rounded-2xl bg-slate-300 p-3 flex flex-col">
+              <div className="rounded-2xl bg-purple-900 px-6 py-3 text-white flex-grow items-center">
+                <h2 className="text-center">{currentQuestion.text}</h2>
+              </div>
+              <div className="flex justify-start w-24 items-center m-2">
+                <p className='rounded-lg bg-red-600 px-1 py-1 text-white text-sm text-center flex-grow'>{currentQuestion.correctAnswerIndex.length} Answer</p>
+              </div>
+              <div className="rounded-2xl w-full mt-1 p-2">
+                <ul className="flex flex-col gap-6">
+                  {currentQuestion.options.map((option, index) => (
+                    <li className="flex items-center gap-2 w-full" key={index}>
+                      <input
+                        type={questions[currentQuestionIndex].correctAnswerIndex.length > 1 ? "checkbox" : "radio"}
+                        id={`option-${index}`}
+                        name={`option-${index}`}
+                        value={option}
+                        checked={selectedOptions.includes(option)}
+                        onChange={handleOptionChange}
+                        className="mr-2 rounded focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      />
+                      <label className="pt-0 text-base font-medium w-full h-full" htmlFor={`option-${index}`}>{option}</label>
+                    </li>
+                  ))}
+                </ul>
+                {currentQuestion.correctAnswerIndex.length > 1 && (
+                  <button className="mt-4 w-full bg-indigo-600 text-white rounded-lg py-2 px-4 font-medium hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={handleNextQuestion}>
+                    Next Question
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <div className='flex flex-col'>

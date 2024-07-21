@@ -19,13 +19,11 @@ export default function QuizResult(e) {
             setIsLoading(false);
         }
         setScore(handleSaveScore(e.results));
-        console.log(e.results);
       }, [e]);
 
     const handleSaveScore = (answerDatas) => {
       let score = 0;
       answerDatas.forEach((index) => {
-        console.log(index.answerData);
         const isCorect = handleCheckAnswer(index.answerData.correctAnswerIndex, index.answerData.answers, index.answerData.options);
         if(isCorect)
           score++;
@@ -48,14 +46,11 @@ export default function QuizResult(e) {
                 positions.push(index);
             }
         }
-
         correctAnswerIndex.sort();
         positions.sort();
-
         if (correctAnswerIndex.length !== positions.length) {
             return false;
         }
-
         for (let i = 0; i < correctAnswerIndex.length; i++) {
             if (correctAnswerIndex[i] !== positions[i]) {
             return false;
@@ -102,7 +97,7 @@ export default function QuizResult(e) {
           <Spinner />
         </div>
       ) : (
-        <div className="flex flex-auto flex-col">
+        <div className="max-w-3xl flex flex-auto flex-col">
         <div className="bg-cyan-900 rounded-md shadow-sm p-0 ml-2">
           <div className="flex justify-center items-center p-2 h-20">
               <span className="text-white mr-2">Number of correct answers is: {score}</span>
@@ -119,7 +114,6 @@ export default function QuizResult(e) {
                     <div className="mt-2 flex flex-col space-y-2 pl-3 pb-2">
                     {result.answerData.options.map((option, i) => (
                         <div className="flex items-center" key={i}>
-                            {/* <span className="mr-2 text-gray-700">•</span> */}
                             <p className="mr-2 text-gray-700">{option}</p>
                         </div>
                     ))}
