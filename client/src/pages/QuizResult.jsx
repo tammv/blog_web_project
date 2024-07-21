@@ -8,7 +8,7 @@ export default function QuizResult(e) {
     const [isLoading, setIsLoading] = useState(true);
     const [modal, setModal] = useState(false);
     const [index, setIndex] = useState();
-    // const [score, setScore] = useState(0);
+    const [score, setScore] = useState(0);
    
     useEffect(() => {
         setResults(e.results);
@@ -18,9 +18,20 @@ export default function QuizResult(e) {
             console.error("Lỗi: 'e.results' bị thiếu hoặc không phải là mảng.");
             setIsLoading(false);
         }
-
+        setScore(handleSaveScore(e.results));
         console.log(e.results);
-    }, [e]);
+      }, [e]);
+
+    const handleSaveScore = (answerDatas) => {
+      let score = 0;
+      answerDatas.forEach((index) => {
+        console.log(index.answerData);
+        const isCorect = handleCheckAnswer(index.answerData.correctAnswerIndex, index.answerData.answers, index.answerData.options);
+        if(isCorect)
+          score++;
+      })
+      return score;
+    }
 
     const handleCheckAnswer = (correctAnswerIndex, answerCheck, optionCheck) => {
         const positions = [];
@@ -80,6 +91,7 @@ export default function QuizResult(e) {
           correctAnswerIndex: results[e].answerData.correctAnswerIndex,
           userAnswerIndex: indexAnswer
         })
+        console.log(indexAnswer, results[e].answerData.correctAnswerIndex);
         setModal(true);
     }
    
@@ -90,6 +102,12 @@ export default function QuizResult(e) {
           <Spinner />
         </div>
       ) : (
+        <div className="flex flex-auto flex-col">
+        <div className="bg-cyan-900 rounded-md shadow-sm p-0 ml-2">
+          <div className="flex justify-center items-center p-2 h-20">
+              <span className="text-white mr-2">Number of correct answers is: {score}</span>
+          </div>
+        </div>
         <div className="flex flex-nowrap flex-col">
           {results.map((result, index) => (
             <button onClick={() => handleViewResult(index)} className={`border focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md shadow-sm m-4 ${handleCheckAnswer(result.answerData.correctAnswerIndex, result.answerData.answers, result.answerData.options)?"bg-green-600 border-green-500 focus:ring-green-500":"bg-red-600 border-red-500 focus:ring-red-500"}`} key={index}>
@@ -136,6 +154,7 @@ export default function QuizResult(e) {
                 </div>
                 </Modal.Body>
             </Modal>
+        </div>
         </div>
       )}
     </div>

@@ -30,7 +30,7 @@ export default function DashQuizzes() {
     if (currentUser.isAdmin) {
       fetchQuizzes();
     }
-  }, [currentUser._id]);
+  }, [currentUser]);
 
   const handleShowMore = async () => {
     const startIndex = userQuizzes.length;

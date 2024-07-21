@@ -59,6 +59,62 @@ export const getAllQuiz = async (req, res, next) => {
   }
 };
 
+export const getQuizByUserId = async (req, res, next) => {
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.order === "asc" ? 1 : -1;
+
+    const queryOptions = {};
+    const users =  await User.findById(req.query.userId);
+    
+    if (req.query.userId && !users.isAdmin) {
+      queryOptions.userId = req.query.userId;
+    }
+    if (req.query.topicID) {
+      queryOptions.topicID = req.query.topicID;
+    }
+    if (req.query.slug) {
+      queryOptions.slug = req.query.slug;
+    }
+    if (req.query.quizId) {
+      queryOptions._id = req.query.quizId;
+    }
+    if (req.query.searchTerm) {
+      queryOptions.$or = [
+        { title: { $regex: req.query.searchTerm, $options: "i" } },
+      ];
+    }
+
+    const quizzesQuery = await Quiz.find(queryOptions)
+    .populate("topicID")
+    .populate("userId", "username email")
+    .sort({ updatedAt: sortDirection })
+    .skip(startIndex)
+    .limit(limit);
+
+    const totalQuizzesQuery = Quiz.countDocuments(queryOptions);
+
+    const now = new Date();
+    const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+    const lastMonthQuizzesQuery = Quiz.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+      ...queryOptions,
+    });
+
+    const [quizzes, totalQuizzes, lastMonthQuizzes] = await Promise.all([
+      quizzesQuery,
+      totalQuizzesQuery.exec(),
+      lastMonthQuizzesQuery.exec(),
+    ]);
+    res.status(200).json({ quizzes, totalQuizzes, lastMonthQuizzes });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching quizzes' });
+  }
+};
+
 export const getQuizById = async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.quizId).populate('questions').populate('topicID').populate("userId", 'username email profilePicture');

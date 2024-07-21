@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Spinner, Sidebar } from "flowbite-react";
+import { Spinner, Button } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { HiClipboardList } from "react-icons/hi";
 
@@ -13,7 +13,7 @@ export default function QuizPage() {
         const fetchQuizzes = async () => {
           try {
             setLoading(true);
-            const res = await fetch(`/api/quiz/?userId=${currentUser._id}`);
+            const res = await fetch(`/api/quiz`);
             const data = await res.json();
             if (res.ok) {
               setQuizzesData(data.quizzes)
@@ -29,7 +29,7 @@ export default function QuizPage() {
         };
         
         fetchQuizzes();
-    },[currentUser._id]);
+    },[]);
 
     if (loading)
         return (
@@ -38,33 +38,18 @@ export default function QuizPage() {
           </div>
     );
     
-
     return (
-      <div className="flex gap-10 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-        <div className="pl-6 py-6">
-          <Sidebar className="w-full md:w-60">
-            <Sidebar.Items>
-              <Sidebar.ItemGroup className="flex flex-col gap-1">
-                <Link to="/create-quiz">
-                  <Sidebar.Item icon={HiClipboardList} as="div">
-                    Create Quizz
-                  </Sidebar.Item>
-                </Link>
-                {currentUser && currentUser.isAdmin ? (
-                <Link to="/dashboardadmin?tab=quizzesadmin">
-                  <Sidebar.Item icon={HiClipboardList} as="div">
-                    Manager Quizz
-                  </Sidebar.Item>
-                </Link>):(
-                  <Link to="/dashboard?tab=quizzes">
-                  <Sidebar.Item icon={HiClipboardList} as="div">
-                    Manager Quizz
-                  </Sidebar.Item>
-                </Link>
-                )}
-              </Sidebar.ItemGroup>
-            </Sidebar.Items>
-          </Sidebar>
+      <main className="flex flex-col max-w-6xl mx-auto p-5">
+        <div className="flex flex-auto justify-center gap-10 backdrop-blur-lg">
+          {currentUser && (currentUser.isPremium || currentUser.isAdmin) ? (
+            <Button>
+              <Link className="flex items-center gap-2" to="/create-quiz"> 
+              <HiClipboardList/> Create Quizz </Link>
+            </Button>) : null
+          }
+          {currentUser && currentUser.isAdmin ? 
+          (<Button><Link className="flex items-center gap-2" to="/dashboardadmin?tab=quizzesadmin"><HiClipboardList/>Manager Quizz</Link></Button>) : 
+          (<Button><Link className="flex items-center gap-2" to="/dashboard?tab=quizzes"><HiClipboardList/>Your Quizz</Link></Button>)}
         </div>
         <div className="pr-10 py-6 pl-9 w-full flex flex-col gap-4">
           {quizzesData.map((quiz) => (
@@ -90,6 +75,6 @@ export default function QuizPage() {
               </div>
             ))}
         </div>
-      </div>
+      </main>
   )
 }

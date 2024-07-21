@@ -95,13 +95,13 @@ const QuizGame = () => {
       ) : error ? (
         <p>Error: {error}</p>
       ) : currentQuestion ? (
-        <div className='rounded-2xl bg-slate-300 p-3'>
-          <h2>{currentQuestion.text}</h2>
+        <div className='rounded-2xl bg-slate-300 p-3 w-full'>
+          <h2 className='item-center'>{currentQuestion.text}</h2>
           <ul>
             {currentQuestion.options.map((option, index) => (
-              <li key={index}>
+              <li className='flex flex-row item-center w-full' key={index}>
                 <input
-                  className='mr-2'
+                  className='item-center'
                   type={questions[currentQuestionIndex].correctAnswerIndex.length > 1 ? "checkbox" : "radio"}
                   id={`option-${index}`}
                   name={`option-${index}`}
@@ -109,7 +109,7 @@ const QuizGame = () => {
                   checked={selectedOptions.includes(option)}
                   onChange={handleOptionChange}
                 />
-                <label htmlFor={`option-${index}`}>{option}</label>
+                <label className='w-full' htmlFor={`option-${index}`}>{option}</label>
               </li>
             ))}
           </ul>
