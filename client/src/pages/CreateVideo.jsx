@@ -55,40 +55,40 @@ export default function CreateVideo() {
     }
   };
 
-  const handleUploadExcel = async () => {
-    try {
-      if (!excelFile) {
-        setImageUploadError("Please select an Excel file");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+  // const handleUploadExcel = async () => {
+  //   try {
+  //     if (!excelFile) {
+  //       setImageUploadError("Please select an Excel file");
+  //       return;
+  //     }
+  //     const reader = new FileReader();
+  //     reader.onload = async (e) => {
+  //       const data = new Uint8Array(e.target.result);
+  //       const workbook = XLSX.read(data, { type: "array" });
+  //       const sheetName = workbook.SheetNames[0];
+  //       const worksheet = workbook.Sheets[sheetName];
+  //       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        const res = await fetch("/api/import/importVideos", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(jsonData),
-        });
-        const result = await res.json();
-        if (!res.ok) {
-          setImageUploadError(result.message);
-        } else {
-          setImageUploadError(null);
-          alert("Excel file uploaded successfully!");
-        }
-      };
-      reader.readAsArrayBuffer(excelFile);
-    } catch (error) {
-      setImageUploadError("Excel upload failed");
-    }
-  };
+  //       const res = await fetch("/api/import/importVideos", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(jsonData),
+  //       });
+  //       const result = await res.json();
+  //       if (!res.ok) {
+  //         setImageUploadError(result.message);
+  //       } else {
+  //         setImageUploadError(null);
+  //         alert("Excel file uploaded successfully!");
+  //       }
+  //     };
+  //     reader.readAsArrayBuffer(excelFile);
+  //   } catch (error) {
+  //     setImageUploadError("Excel upload failed");
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -153,7 +153,7 @@ export default function CreateVideo() {
             )}
           </Button>
         </div>
-        <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
+        {/* <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
           <FileInput type="file" accept=".xlsx, .xls" onChange={(e) => setExcelFile(e.target.files[0])} />
           <Button
             type="button"
@@ -164,7 +164,7 @@ export default function CreateVideo() {
           >
             Upload Excel
           </Button>
-        </div>
+        </div> */}
         {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
         <ReactQuill
           theme="snow"
