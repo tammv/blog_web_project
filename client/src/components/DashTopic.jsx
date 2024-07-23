@@ -1,17 +1,22 @@
 import { Modal, Table, Button, TextInput, Label } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { AuthContext } from '../redux/auth-context';
+import { db, storage } from '../firebase';
+import { ref as dbRef, set, push, query, orderByChild, equalTo, get, remove } from 'firebase/database';
+import { ref as storageRef, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 export default function DashTopics() {
   const { currentUser } = useSelector((state) => state.user);
+  const authContext = useContext(AuthContext);
   const [topics, setTopics] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [topicIdToDelete, setTopicIdToDelete] = useState("");
   const [newTopicName, setNewTopicName] = useState("");
-  const [reloadTopics, setReloadTopics] = useState(true); // State để kiểm soát khi nào cần reload topics
+  const [reloadTopics, setReloadTopics] = useState(true);
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -28,9 +33,9 @@ export default function DashTopics() {
 
     if (currentUser.isAdmin && reloadTopics) {
       fetchTopics();
-      setReloadTopics(false); // Đánh dấu đã reload, để useEffect không chạy lại ngay lập tức
+      setReloadTopics(false);
     }
-  }, [currentUser.isAdmin, reloadTopics]); // Chỉ gọi lại khi currentUser.isAdmin hoặc reloadTopics thay đổi
+  }, [currentUser.isAdmin, reloadTopics]);
 
   const handleCreateTopic = async () => {
     try {
@@ -48,12 +53,39 @@ export default function DashTopics() {
       if (res.ok) {
         setShowCreateModal(false);
         setNewTopicName("");
-        setReloadTopics(true); // Khi tạo thành công, set lại state để reload topics
+        setReloadTopics(true);
+        await addNewRoom(newTopicName, null);
       } else {
         console.log(data.message);
       }
     } catch (error) {
       console.log(error.message);
+    }
+  };
+
+  const addNewRoom = async (newRoomName, file) => {
+    let imageUrl = "";
+    if (file) {
+        try {
+            const fileRef = storageRef(storage, `room_images/${file.name}`);
+            const snapshot = await uploadBytes(fileRef, file);
+            imageUrl = await getDownloadURL(snapshot.ref);
+        } catch (error) {
+            console.error("Failed to upload image: " + error.message);
+            return;
+        }
+    }
+
+    try {
+        const user = JSON.parse(localStorage.getItem('user')) || authContext.user;
+        const newRoomRef = push(dbRef(db, 'rooms'));
+        await set(newRoomRef, {
+            name: newRoomName,
+            image: imageUrl || 'https://i.pinimg.com/564x/41/66/cd/4166cd94bd5b55d158a39e81b20a950a.jpg',
+            members: [user.uid],
+        });
+    } catch (error) {
+        console.error("Error adding room: " + error.message);
     }
   };
 
@@ -65,7 +97,16 @@ export default function DashTopics() {
       });
       const data = await res.json();
       if (res.ok) {
+        const deletedTopic = topics.find((topic) => topic._id === topicIdToDelete);
         setTopics((prev) => prev.filter((topic) => topic._id !== topicIdToDelete));
+
+        if (deletedTopic) {
+          const roomQuery = query(dbRef(db, 'rooms'), orderByChild('name'), equalTo(deletedTopic.nameOfTopic));
+          const roomSnapshot = await get(roomQuery);
+          roomSnapshot.forEach(async (roomChild) => {
+            await remove(roomChild.ref);
+          });
+        }
       } else {
         console.log(data.message);
       }

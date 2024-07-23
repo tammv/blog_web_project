@@ -359,16 +359,14 @@ function Chat({ setSelectedImage }) {
     );
 
     const formatDate = (timestamp) => {
-        if (!timestamp || !timestamp.toDate) {
+        if (!timestamp) {
             return 'Invalid date';
         }
 
-        const now = new Date();
         const date = new Date(timestamp);
+        const now = new Date();
         const isToday = now.toDateString() === date.toDateString();
-        const isYesterday =
-            new Date(now.setDate(now.getDate() - 1)).toDateString() ===
-            date.toDateString();
+        const isYesterday = new Date(now.setDate(now.getDate() - 1)).toDateString() === date.toDateString();
 
         if (isToday) {
             return format(date, 'HH:mm');

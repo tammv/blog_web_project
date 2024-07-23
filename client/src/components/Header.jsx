@@ -15,7 +15,11 @@ export default function Header() {
   const navigate = useNavigate();
 
   const handleChatClick = () => {
-    navigate("/rooms");
+      if (currentUser && (!currentUser.isPremium || !currentUser.isAdmin)) {
+        navigate("/payment");
+      } else {
+        navigate("/rooms");
+      }
   };
 
   const handleSignout = async () => {

@@ -8,6 +8,7 @@ import DashComments from "../components/DashComments";
 import DashboardComp from "../components/DashboardComp";
 import DashReports from "../components/DashReport";
 import DashTopics from "../components/DashTopic";
+import DashChatRooms from "../components/DashChatRooms";
 import DashVideosAdmin from "../components/DashVideoAdmin";
 import DashQuizzes from "../components/DashQuizzesAdmin";
 
@@ -43,6 +44,8 @@ export default function Dashboard() {
       {tab === "reports" && <DashReports />}
       {/* dashboard topic */}
       {tab === "topic" && <DashTopics />}
+      {/* dashboard chat */}
+      {tab === "rooms" && <DashChatRooms />}
       {/* dashboard comp */}
       {tab === "dash" && <DashboardComp />}
     </div>

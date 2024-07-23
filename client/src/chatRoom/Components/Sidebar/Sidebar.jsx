@@ -93,7 +93,7 @@ function Sidebar() {
             const newRoomRef = push(dbRef(db, 'rooms'));
             await set(newRoomRef, {
                 name: newRoomName,
-                image: imageUrl || 'https://via.placeholder.com/150',
+                image: imageUrl || 'https://i.pinimg.com/564x/41/66/cd/4166cd94bd5b55d158a39e81b20a950a.jpg',
                 members: [user.uid],
             });
             toast.success("New room added successfully!");
@@ -117,23 +117,12 @@ function Sidebar() {
                     <IconButton onClick={handleDialogOpen}>
                         <Chat />
                     </IconButton>
-                    <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                        <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                    >
-                        <MenuItem onClick={logout}>Logout</MenuItem>
-                    </Menu>
+
                 </div>
             </div>
             <div className="sidebar__search">
                 <div className="sidebar__searchContainer">
-                    <SearchOutlined />
+
                     <input
                         ref={inputRef}
                         placeholder="Search chat room"

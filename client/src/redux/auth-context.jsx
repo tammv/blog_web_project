@@ -1,6 +1,5 @@
 import React, { useState, createContext, useEffect } from 'react';
-import { getAuth, signOut } from 'firebase/auth';
-import { getDatabase, ref, set, serverTimestamp } from 'firebase/database'; // Corrected import
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { db } from '../firebase';
 
 export const AuthContext = createContext({
@@ -13,10 +12,18 @@ const AuthContextProvider = (props) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      setUser(storedUser);
-    }
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        setUser(null);
+        localStorage.removeItem('user');
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const loginHandler = (user) => {
@@ -40,7 +47,6 @@ const AuthContextProvider = (props) => {
 
 export default AuthContextProvider;
 
-// Hàm thêm tài liệu vào Realtime Database
 export const addDocument = async (collectionName, data) => {
   try {
     const docRef = ref(db, `${collectionName}/${data.uid}`);
@@ -54,7 +60,6 @@ export const addDocument = async (collectionName, data) => {
   }
 };
 
-// Hàm tạo keywords từ displayName, sử dụng cho tìm kiếm
 export const generateKeywords = (displayName) => {
   const name = displayName.split(' ').filter(word => word);
   const length = name.length;
