@@ -11,6 +11,8 @@ const QuizGame = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { quizId } = useParams();
+  const color = ['bg-red-800', 'bg-orange-600', 'bg-lime-700', 'bg-green-900', 'bg-blue-700', 'bg-violet-600', 'bg-fuchsia-400', 'bg-pink-600'];
+
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -63,7 +65,9 @@ const QuizGame = () => {
       };
 
       setResult(results ? results.concat({answerData}) : [{answerData}]);
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setTimeout(() => {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }, 600);
       setSelectedOptions([]);
     }
   };
@@ -87,7 +91,7 @@ const QuizGame = () => {
   const currentQuestion = questions?.[currentQuestionIndex]; // Optional chaining to handle potential null
 
   return (
-    <div className='flex justify-center p-6 m-6'>
+    <div className='flex justify-center p-2 m-4'>
       {isLoading ? (
         <div className="flex justify-center items-center min-h-screen">
           <Spinner size="xl" />
@@ -95,19 +99,19 @@ const QuizGame = () => {
       ) : error ? (
         <p>Error: {error}</p>
       ) : currentQuestion ? (
-        <div className="max-w-5xl h-full">
+        <div className="max-w-5xl w-5/6 lg:w-5/6 xl:w-5/6 h-full">
           <div className="select-none w-full h-full">
-            <div className="rounded-2xl bg-slate-300 p-3 flex flex-col">
-              <div className="rounded-2xl bg-purple-900 px-6 py-3 text-white flex-grow items-center">
+            <div className="rounded-2xl bg-slate-300 p-3 flex flex-col w-full">
+              <div className="flex-grow items-center place-content-center text-white rounded-2xl bg-purple-900 min-h-56 max-h-60 overflow-auto px-2">
                 <h2 className="text-center">{currentQuestion.text}</h2>
               </div>
-              <div className="flex justify-start w-24 items-center m-2">
-                <p className='rounded-lg bg-red-600 px-1 py-1 text-white text-sm text-center flex-grow'>{currentQuestion.correctAnswerIndex.length} Answer</p>
+              <div className="flex justify-start w-9 md:w-32 items-center m-1">
+                <p className='rounded-lg bg-red-600 px-1 py-1 text-white text-sm text-center flex-grow'>Choose {currentQuestion.correctAnswerIndex.length} answer</p>
               </div>
               <div className="rounded-2xl w-full mt-1 p-2">
-                <ul className="flex flex-col gap-6">
+                <ul className="transition duration-300 ease-in-out flex flex-col md:flex-row gap-2">
                   {currentQuestion.options.map((option, index) => (
-                    <li className="flex items-center gap-2 w-full" key={index}>
+                    <li className={`flex-row-reverse rounded flex w-full min-h-64 max-h-72 overflow-auto text-center ${color[index]}`} key={index}>
                       <input
                         type={questions[currentQuestionIndex].correctAnswerIndex.length > 1 ? "checkbox" : "radio"}
                         id={`option-${index}`}
@@ -115,9 +119,9 @@ const QuizGame = () => {
                         value={option}
                         checked={selectedOptions.includes(option)}
                         onChange={handleOptionChange}
-                        className="mr-2 rounded focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="mt-2 mr-2 rounded"
                       />
-                      <label className="pt-0 text-base font-medium w-full h-full" htmlFor={`option-${index}`}>{option}</label>
+                      <label className="text-white place-content-center text-base font-medium w-full h-full pl-3" htmlFor={`option-${index}`}>{option}</label>
                     </li>
                   ))}
                 </ul>

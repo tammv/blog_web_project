@@ -70,22 +70,31 @@ export default function QuizPage() {
         <main className="flex flex-col max-w-6xl mx-auto p-5">
           <div className="flex flex-auto justify-center gap-10 backdrop-blur-lg mb-2">
           {currentUser && (currentUser.isPremium || currentUser.isAdmin) ? (
-            <Button>
-              <Link className="flex items-center gap-2" to="/create-quiz"> 
-              <HiClipboardList/> Create Quizz </Link>
-            </Button>) : null
+            <Link to="/create-quiz"> 
+              <Button className="bg-blue-700 hover:bg-gradient-to-r hover:from-green-500 hover:to-blue-500 flex justify-between text-center items-center">
+                <HiClipboardList className="mr-2"/> 
+                <p> Create Quizz </p>
+              </Button>
+            </Link>
+            ) : null
           }
           {currentUser && currentUser.isAdmin ? 
-          (<Button>
-            <Link className="flex items-center gap-2" to="/dashboardadmin?tab=quizzesadmin">
-              <HiClipboardList/>Manager Quizz
+          (
+            <Link to="/dashboardadmin?tab=quizzesadmin"> 
+              <Button className="bg-orange-500 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500 flex justify-between text-center items-center">
+                <HiClipboardList className="mr-2"/> 
+                <p> Manager Quizz </p>
+              </Button>
             </Link>
-            </Button>) : 
-          (<Button>
-            <Link className="flex items-center gap-2" to="/dashboard?tab=quizzes">
-              <HiClipboardList/>Your Quizz
-            </Link>
-            </Button>)}
+          ) : 
+          (
+            <Link to="/dashboard?tab=quizzes"> 
+            <Button className="bg-orange-500 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500 flex justify-between text-center items-center">
+              <HiClipboardList className="mr-2"/> 
+              <p> Your Quizz </p>
+            </Button>
+          </Link>
+          )}
           </div>
             <input
                 type="text"

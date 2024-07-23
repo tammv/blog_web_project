@@ -123,7 +123,6 @@ function QuestionComp(question) {
       level: selectedLevel
     };
 
-
     try {
       setLoading(true);
       const res = await fetch(`/api/quiz/${quizId}/question/${question.question._id}`, {

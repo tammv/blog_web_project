@@ -1,5 +1,5 @@
 import { FaRegCheckSquare, FaListUl } from "react-icons/fa";
-import { Spinner } from "flowbite-react";
+import { Spinner, Button } from "flowbite-react";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
@@ -32,7 +32,7 @@ export default function QuizDetailUser() {
   return (
     <div className="block w-auto mx-72">
       <div className="mt-10 mb-6">
-        <div className="relative rounded z-10 p-16 h-56 bg-slate-50 border">
+        <div className="rounded z-10 p-16 h-56 bg-slate-50 border">
           <div className="p-2 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-light-3">Quiz: {quizzesStores.title}</h2>
               <span className="text-sm text-light-2">Topic: {quizzesStores.topicID.nameOfTopic}</span>
@@ -45,7 +45,9 @@ export default function QuizDetailUser() {
               <img className="w-6 h-6 rounded-full" src={quizzesStores.userId.profilePicture} alt="Avatar User Create Quizz" /> 
               {quizzesStores.userId.username}
             </p>
-            <button type="button" className="rounded-md text-white border-gray-600 shadow-sm px-3 bg-gradient-to-r from-green-600 to-blue-600 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500"> <Link className="flex flex-row justify-center items-center w-full gap-3" to={`/game/quiz/${quizId}`}>Play</Link> </button>
+            <Link className="flex flex-row justify-center items-center gap-3" to={`/game/quiz/${quizId}`}>
+              <Button type="button" className="rounded-md px-4 text-white border-gray-600 shadow-sm bg-gradient-to-r from-orange-600 to-blue-600 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500"> Play </Button>
+            </Link>
           </div>
         </div>
       </div>

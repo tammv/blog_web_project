@@ -82,7 +82,7 @@ export default function QuizDetailPremium() {
   return (
     <div className="block w-auto mx-72">
       <div className="mt-10 mb-6">
-        <div className="relative rounded z-10 p-16 h-56 bg-slate-50 border">
+        <div className="rounded z-10 p-16 h-56 bg-slate-50 border">
           <div className="p-2 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-light-3">Quiz: {quizzesStores.title}</h2>
               <span className="text-sm text-light-2">Topic: {quizzesStores.topicID.nameOfTopic}</span>
@@ -95,12 +95,18 @@ export default function QuizDetailPremium() {
               <img className="w-6 h-6 rounded-full" src={quizzesStores.userId.profilePicture} alt="Avatar User Create Quizz" /> 
               {quizzesStores.userId.username}
             </p>
-            <button type="button" className="rounded-md text-white border-gray-600 shadow-sm px-3 bg-gradient-to-r from-green-600 to-blue-600 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500"> <Link className="flex flex-row justify-center items-center w-full gap-3" to={`/game/quiz/${quizId}`}>Play</Link> </button>
+            <Link className="flex flex-row justify-center items-center gap-3" to={`/game/quiz/${quizId}`}>
+              <Button type="button" className="rounded-md p-0 md:px-4 text-white border-gray-600 shadow-sm bg-gradient-to-r from-orange-600 to-blue-600 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500"> Play </Button>
+            </Link>
           </div>
         </div>
       </div>
-      <div className="flex flex-row w-full justify-between mb-10">
-        <Button className="w-full bg-gradient-to-r from-violet-900 to-blue-600 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500"><Link className="flex flex-row justify-center items-center w-full gap-3" to={`/quiz/${quizId}/questions`}> <FaEdit/> Add Question</Link></Button>
+      <div className="flex flex-row w-full justify-between mb-10 gap-3">
+        <Link className="flex flex-row justify-center items-center w-full" to={`/quiz/${quizId}/questions`}> 
+        <Button className="w-full bg-gradient-to-r from-violet-900 to-blue-600 hover:bg-gradient-to-r hover:from-violet-800 hover:to-blue-500">
+          <div className="flex flex-row justify-center items-center gap-3"><FaEdit/> Add Question</div>
+        </Button>
+        </Link>
         <Button className="w-full bg-gradient-to-r from-rose-900 to-red-600 hover:bg-gradient-to-r hover:from-rose-600 hover:to-red-300" onClick={() => setShowModal(true)} ><div className="flex flex-row justify-center items-center gap-3"><FaTrashAlt/> Delete Quizz </div></Button>
       </div>
       <div className="flex flex-col">
