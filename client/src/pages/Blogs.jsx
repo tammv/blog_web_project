@@ -32,7 +32,7 @@ export default function Blogs() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(6);
-  const [searchQuery, setSearchQuery] = useState(""); // Add search query state
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -40,7 +40,7 @@ export default function Blogs() {
         setLoading(true);
         const res = await fetch(
           `/api/post/getposts?startIndex=${(currentPage - 1) * postsPerPage}&limit=${postsPerPage}`
-        ); // Replace with your API endpoint
+        );
         const data = await res.json();
         if (res.ok) {
           setPosts(data.posts);
@@ -74,9 +74,7 @@ export default function Blogs() {
     }
   };
 
-  const filteredPosts = posts.filter((post) =>
-    post.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPosts = posts.filter((post) => post.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
@@ -96,25 +94,20 @@ export default function Blogs() {
         onChange={(e) => setSearchQuery(e.target.value)}
         className="w-full p-2 mb-4 border border-gray-300 rounded"
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
-            <div
-              key={post._id}
-              className="post-card bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300"
-            >
+            <div key={post._id}>
               <PostCard
                 post={{
                   ...post,
-                  title: (
-                    <HighlightedText text={post.title} highlight={searchQuery} />
-                  ),
+                  title: <HighlightedText text={post.title} highlight={searchQuery} />,
                 }}
               />
             </div>
           ))
         ) : (
-          <div className="text-center col-span-full">Blog not found</div>
+          <div className="text-center col-span-full">No posts found</div>
         )}
       </div>
       <div className="flex justify-center mt-10">
