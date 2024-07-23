@@ -82,19 +82,22 @@ export const deleteComment = async (req, res, next) => {
   try {
     // Validate the comment ID to ensure it's a valid MongoDB ObjectId
     if (!req.params.commentId.match(/^[0-9a-fA-F]{24}$/)) {
-      return next(errorHandler(400, "Invalid comment ID"));
+      // return next(errorHandler(400, "Invalid comment ID"));
+      return res.status(400).json({ message: "Invalid comment ID" });
     }
 
     // Find the comment by ID
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) {
-      return next(errorHandler(404, "Comment not found"));
+      // return next(errorHandler(404, "Comment not found"));
+      return res.status(404).json({ message: "Comment not found" });
     }
 
     // Check if the user is authorized to delete this comment
-    if (comment.userId.toString() !== req.user.id.toString()) {
-      return next(errorHandler(403, "You are not allowed to delete this comment"));
-    }
+    // if (comment.userId.toString() !== req.user.id.toString()) {
+    //   // return next(errorHandler(403, "You are not allowed to delete this comment"));
+    //   return res.status(403).json({ message: "You are not allowed to delete this comment" });
+    // }
 
     // Delete the comment using deleteOne
     await Comment.deleteOne({ _id: req.params.commentId });

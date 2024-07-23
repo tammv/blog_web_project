@@ -118,7 +118,9 @@ export default function DashComments() {
             {filteredComments.map((comment) => (
               <Table.Body className="divide-y" key={comment._id}>
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell>{new Date(comment.updatedAt).toLocaleDateString()}</Table.Cell>
+                  <Table.Cell>
+                    {new Date(comment.updatedAt).toLocaleDateString()}
+                  </Table.Cell>
                   <Table.Cell>
                     <HighlightedText text={comment.content} highlight={searchQuery} />
                   </Table.Cell>
