@@ -15,11 +15,11 @@ export default function Header() {
   const navigate = useNavigate();
 
   const handleChatClick = () => {
-      if (currentUser && (!currentUser.isPremium || !currentUser.isAdmin)) {
-        navigate("/payment");
-      } else {
-        navigate("/rooms");
-      }
+    if (currentUser && (currentUser.isPremium || currentUser.isAdmin)) {
+      navigate("/rooms");
+    } else {
+      navigate("/payment");
+    }
   };
 
   const handleSignout = async () => {
