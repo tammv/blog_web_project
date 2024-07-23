@@ -171,7 +171,7 @@ export default function DashTopics() {
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={handleDeleteTopic}>
-                Yes, I'm sure
+                Yes, I&#x27;m sure
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, cancel

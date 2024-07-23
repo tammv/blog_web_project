@@ -166,7 +166,7 @@ export default function DashSavePost() {
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={handleRemovePost}>
-                Yes, I'm sure
+                Yes, I&#x27;m sure
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, cancel

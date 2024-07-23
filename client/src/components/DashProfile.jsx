@@ -1,4 +1,4 @@
-import { Alert, Button, Modal, ModalBody, TextInput } from "flowbite-react";
+import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
@@ -65,6 +65,7 @@ export default function DashProfile() {
         setImageFile(null);
         setImageFileUrl(null);
         setImageFileUploading(false);
+        setUpdateUserError(error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -92,6 +93,12 @@ export default function DashProfile() {
       setUpdateUserError("Please wait for image to upload");
       return;
     }
+    const validPassword = new RegExp("^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$");
+    if(Object.prototype.hasOwnProperty.call(formData, 'password') && !validPassword.test(formData.password)){
+      setUpdateUserError("Password must have at least 6 characters including letters and numbers");
+      return;
+    }
+
     try {
       dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -196,7 +203,7 @@ export default function DashProfile() {
           id="email"
           placeholder="email"
           defaultValue={currentUser.email}
-          onChange={handleChange}
+          disabled
         />
         <TextInput type="password" id="password" placeholder="password" onChange={handleChange} />
         <Button type="submit" gradientDuoTone="purpleToBlue" outline disabled={loading || imageFileUploading}>
@@ -244,7 +251,7 @@ export default function DashProfile() {
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={handleDeleteUser}>
-                Yes, I'm sure
+                Yes, I&#x27;m sure
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, cancel

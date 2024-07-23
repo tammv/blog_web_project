@@ -1,6 +1,3 @@
-import React from "react";
-import axios from "axios";
-
 const PaymentPage = () => {
   const getUserIDFromCookie = () => {
     const cookies = document.cookie.split(";");

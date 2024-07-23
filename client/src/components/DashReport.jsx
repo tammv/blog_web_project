@@ -75,11 +75,11 @@ export default function DashReports() {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>Bài viết / Video</Table.HeadCell>
-              <Table.HeadCell>Nội dung báo cáo</Table.HeadCell>
-              <Table.HeadCell>Người báo cáo</Table.HeadCell>
-              <Table.HeadCell>Loại</Table.HeadCell>
-              <Table.HeadCell>Xóa</Table.HeadCell>
+              <Table.HeadCell>Post / Video</Table.HeadCell>
+              <Table.HeadCell>Content report</Table.HeadCell>
+              <Table.HeadCell>User report</Table.HeadCell>
+              <Table.HeadCell>Remove</Table.HeadCell>
+              <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {reports.map((report) => (
@@ -101,7 +101,7 @@ export default function DashReports() {
                       onClick={() => handleDeleteReport(report._id)}
                       className="font-medium text-red-500 hover:underline cursor-pointer"
                     >
-                      Xóa
+                      Delete
                     </span>
                   </Table.Cell>
                 </Table.Row>
@@ -110,12 +110,12 @@ export default function DashReports() {
           </Table>
           {hasMore && (
             <button onClick={handleShowMore} className="w-full text-teal-500 self-center text-sm py-7">
-              Xem thêm
+              Show more
             </button>
           )}
         </>
       ) : (
-        <p>Bạn chưa có báo cáo nào!</p>
+        <p>You don&#x27;t have any reports yet!</p>
       )}
     </div>
   );

@@ -28,7 +28,7 @@ export default function FooterComponent() {
                                 href='/about'
                                 target='_blank'
                                 rel='noopener noreferrer'>
-                                DevB's Blog
+                                DevB&#x27;s Blog
                             </Footer.Link>
                         </Footer.LinkGroup>
                     </div>

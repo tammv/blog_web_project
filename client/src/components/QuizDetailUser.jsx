@@ -80,7 +80,7 @@ export default function QuizDetailUser() {
           </div>
           <div className="h-6 mb-4">
             <span className="absolute px-2 text-black left-4">
-              Lựa chọn trả lời
+              Choose answer
             </span>
           </div>
           <div className="grid grid-cols-2">

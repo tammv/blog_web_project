@@ -127,7 +127,6 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(400, "Invalid password"));
     }
 
-    // Check if the current date exceeds dateOfPre
     const currentDate = new Date();
     if (validUser.dateOfPre && currentDate > validUser.dateOfPre) {
       validUser.isPremium = false;

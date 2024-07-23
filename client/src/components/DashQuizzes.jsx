@@ -126,7 +126,7 @@ export default function DashQuizzes() {
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={handleDeleteQuiz}>
-                Yes, I am sure
+                Yes, I&#x27;m sure
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, cancel
