@@ -297,11 +297,11 @@ export default function DashUsers() {
             <div className='flex justify-center gap-4'>
               {banAction ? (
                 <Button color='failure' onClick={handleBanUnbanUser}>
-                  Yes, I'm sure
+                  Yes, I&#x27;m sure
                 </Button>
               ) : (
                 <Button color='failure' onClick={handleDeleteUser}>
-                  Yes, I'm sure
+                  Yes, I&#x27;m sure
                 </Button>
               )}
               <Button color='gray' onClick={() => setShowModal(false)}>

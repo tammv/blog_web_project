@@ -30,6 +30,7 @@ import RoomRoutes from "./chatRoom/RoomRoutes";
 import AuthContextProvider from './redux/auth-context';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PremiumPrivateRoute from "./components/PremiumPrivateroute";
 
 export default function App() {
   const { currentUser } = useSelector((state) => state.user);
@@ -48,12 +49,15 @@ export default function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/rooms/*" element={<RoomRoutes />} />
-
           <Route path="/video/:videoId" element={<VideoComponent />} />
           <Route path="/videos" element={<ListVideoComponent />} />
           <Route path="/createVideo" element={<CreateVideo />} />
           <Route path="/post/:postSlug" element={<PostPage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/quiz" element={<QuizPage />}></Route>
+          <Route path="/quiz/:quizId" element={<QuizDetail />}></Route>
+          <Route path="/game/quiz/:quizId" element={<QuizGame />}></Route>
+          <Route path="/success" element={<PaymentSuccess />} />
           {currentUser && currentUser.isAdmin ? (
             <Route element={<OnlyAdminPrivateRoute />}>
               <Route path="/dashboardadmin" element={<DashboardAdmin />} />
@@ -66,13 +70,12 @@ export default function App() {
               <Route path="/update-video/:videoId" element={<UpdateVideo />} />
             </Route>
           )}
-          <Route path="/create-quiz" element={<CreateQuiz />}></Route>
-          <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
-          <Route path="/quiz" element={<QuizPage />}></Route>
-          <Route path="/quiz/:quizId" element={<QuizDetail />}></Route>
-          <Route path="/game/quiz/:quizId" element={<QuizGame />}></Route>
-          <Route path="/success" element={<PaymentSuccess />} />
-
+          {currentUser && (currentUser.isAdmin || currentUser.isPremium) && (
+            <Route element={<PremiumPrivateRoute/>}>
+              <Route path="/create-quiz" element={<CreateQuiz />}></Route>
+              <Route path="/quiz/:quizId/questions" element={<CreateQuiz />}></Route>
+            </Route>
+          )}
         </Routes>
         <Footer />
       </AuthContextProvider>

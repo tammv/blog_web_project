@@ -7,7 +7,7 @@ import { useParams, Link } from "react-router-dom";
 function QuestionComp(question) {
   const [loading, setLoading] = useState(true);
   const [questionText, setQuestionText] = useState("");
-  const [options, setOptions] = useState([{text: "", checked: false}, {text: "", checked: false}]);
+  const [options, setOptions] = useState([{text: "", checked: false}, {text: "", checked: false},{text: "", checked: false}, {text: "", checked: false}]);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState([]);
   const [selectedLevel, setSelectLevel] = useState("");
   const { quizId } = useParams();
@@ -46,9 +46,14 @@ function QuestionComp(question) {
   const handleRemoveOption = (index) => {
     if(options.length >= 3){
       const updatedOptions = [...options.slice(0, index), ...options.slice(index + 1)];
+      const updatedCorrectAnswerIndices = [];
+      updatedOptions.map((option, index) => {
+        if (option.checked)
+          updatedCorrectAnswerIndices.push(index);
+      })
+      setCorrectAnswerIndex(updatedCorrectAnswerIndices);
       setOptions(updatedOptions);
     }
-    console.log(options);
   };
 
   const handleOptionChange = (index, event) => {
@@ -72,19 +77,49 @@ function QuestionComp(question) {
   };
 
   const handleSubmitQuestion = async () => {
+
     if (!questionText || options.length < 2 || correctAnswerIndex.length === 0) {
       alert("Please fill out all fields and select at least one correct answer!");
       return;
     }
 
-    const questionData = {
-      text: questionText,
-      options: options.map((option) => option.text),
-      correctAnswerIndex: correctAnswerIndex,
-      level: selectedLevel
-    };
+    if(options.some((option) => option.checked && !option.text.trim())){
+      alert("Please enter text when mark it correct!");
+      return;
+    }
 
-    console.log(questionData);
+    const checkOptions = options.some((option) => option.text.trim());
+
+    const updatedOptions = [];
+    const updatedCorrectAnswerIndices = [];
+
+    let questionData;
+
+    if(checkOptions){
+      options.map((option) => {
+        if(option.text.trim())
+          updatedOptions.push({text: option.text, checked: option.checked})
+      })
+
+      updatedOptions.map((option, index) => {
+        if(option.checked)
+          updatedCorrectAnswerIndices.push(index)
+      })
+
+      questionData = {
+        text: questionText,
+        options: updatedOptions.map((option) => option.text),
+        correctAnswerIndex: updatedCorrectAnswerIndices,
+        level: selectedLevel || "easy"
+      };
+    }else{
+      questionData = {
+        text: questionText,
+        options: options.map((option) => option.text),
+        correctAnswerIndex: correctAnswerIndex,
+        level: selectedLevel || "easy"
+      };
+    }
 
     try {
       const res = await fetch(`/api/quiz/${quizId}/question`, {
@@ -197,7 +232,7 @@ function QuestionComp(question) {
                     placeholder={`Enter reply options here ${index + 1}`}
                     value={option.text}
                     onChange={(e) => handleOptionChange(index, e)}
-                    className="resize-none border-none focus:outline-none bg-inherit h-full w-full text-center text-lg text-white placeholder-slate-50"
+                    className="resize-none border-none place-content-center pb-4 focus:outline-none bg-inherit h-full w-full text-center text-lg text-white placeholder-slate-50"
                   />
                 </div>
               </div>

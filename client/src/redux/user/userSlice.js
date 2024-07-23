@@ -53,7 +53,9 @@ const userSlice = createSlice({
             state.currentUser = null;
             state.error = null;
             state.loading = false;
-            location.href = '/';
+            setTimeout(function() {
+                location.href = '/';
+            }, 10);
         },
     }
 });
