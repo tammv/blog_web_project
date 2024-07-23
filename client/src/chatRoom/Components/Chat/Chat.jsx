@@ -15,6 +15,10 @@ import {
     ListItemAvatar,
     ListItemText,
     TextField,
+    FormControl,
+    MenuItem,
+    InputLabel,
+    Select,
     Checkbox,
 } from '@material-ui/core';
 import {
@@ -24,6 +28,7 @@ import {
     Mic,
     People,
     ExitToApp,
+    Settings,
 } from '@material-ui/icons';
 import { db, storage } from '../../../firebase';
 import { AuthContext } from '../../../redux/auth-context';
@@ -66,11 +71,13 @@ function Chat({ setSelectedImage }) {
     const bottomRef = useRef();
     const [roomImage, setRoomImage] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
+    const [openSettingsDialog, setOpenSettingsDialog] = useState(false); // Thêm state cho dialog cài đặt
     const [members, setMembers] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] = useState('en-US'); // State cho ngôn ngữ đã chọn
 
     const authContext = useContext(AuthContext);
 
@@ -377,6 +384,20 @@ function Chat({ setSelectedImage }) {
         }
     };
 
+    const handleSettingsDialogOpen = () => {
+        setOpenSettingsDialog(true);
+    };
+
+    const handleSettingsDialogClose = () => {
+        setOpenSettingsDialog(false);
+    };
+
+    const handleLanguageChange = (event) => {
+        const language = event.target.value;
+        setSelectedLanguage(language);
+        mic.lang = language;
+    };
+
     return (
         <div className="chat">
             <div className="chat__header">
@@ -388,6 +409,9 @@ function Chat({ setSelectedImage }) {
                         {messages.length ? formatDate(messages[messages.length - 1]?.timestamp) : 'N/A'}
                     </p>
                 </div>
+                <IconButton onClick={handleSettingsDialogOpen}>
+                    <Settings />
+                </IconButton>
                 <IconButton onClick={handleDialogOpen}>
                     <People />
                 </IconButton>
@@ -551,6 +575,28 @@ function Chat({ setSelectedImage }) {
                     </Button>
                     <Button onClick={handleLeaveRoom} color="secondary">
                         Leave
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openSettingsDialog} onClose={handleSettingsDialogClose} aria-labelledby="settings-dialog-title">
+                <DialogTitle id="settings-dialog-title">Setting Language for Voice Chat</DialogTitle>
+                <DialogContent>
+                    <FormControl fullWidth>
+                        <InputLabel id="language-select-label">Language</InputLabel>
+                        <Select
+                            labelId="language-select-label"
+                            value={selectedLanguage}
+                            onChange={handleLanguageChange}
+                        >
+                            <MenuItem value="en-US">English</MenuItem>
+                            <MenuItem value="vi-VN">Vietnamese</MenuItem>
+                        </Select>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleSettingsDialogClose} color="primary">
+                        Close
                     </Button>
                 </DialogActions>
             </Dialog>
