@@ -55,7 +55,7 @@ export default function SignIn() {
         <div className="flex-1">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
-              <Label value="Your email" className="dark:text-gray-200" />
+            <span style={{ color: 'dark:text-gray-200' }}>Email</span>
               <TextInput
                 type="email"
                 placeholder="email@company.com"
@@ -65,7 +65,7 @@ export default function SignIn() {
               />
             </div>
             <div>
-              <Label value="Your password" className="dark:text-gray-200" />
+            <span style={{ color: 'dark:text-gray-200' }}>Password</span>
               <TextInput
                 type="password"
                 placeholder="**********"

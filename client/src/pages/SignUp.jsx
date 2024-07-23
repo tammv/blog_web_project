@@ -2,6 +2,10 @@ import { Alert, Button, Label, Modal, Spinner, TextInput } from "flowbite-react"
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { ref, set, query, get, orderByChild, equalTo } from 'firebase/database';
+import { db } from '../firebase';
+import { generateKeywords } from '../redux/auth-context';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -9,6 +13,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
+  const auth = getAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -94,6 +99,14 @@ export default function SignUp() {
     try {
       setLoading(true);
       setErrorMessages(null);
+
+      const emailQuery = query(ref(db, 'users'), orderByChild('email'), equalTo(formData.email));
+      const emailSnapshot = await get(emailQuery);
+      if (emailSnapshot.exists()) {
+        setLoading(false);
+        return setErrorMessages("Email already exists.");
+      }
+
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -105,7 +118,18 @@ export default function SignUp() {
         setLoading(false);
         return setErrorMessages(data.message);
       }
-      
+
+      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+
+      await set(ref(db, 'users/' + auth.currentUser.uid), {
+        displayName: formData.username,
+        email: formData.email,
+        photoURL: '',
+        uid: auth.currentUser.uid,
+        providerId: 'password',
+        keywords: generateKeywords(formData.username.toLowerCase()),
+      });
+
       setLoading(false);
       if (res.ok) {
         navigate("/sign-in");
@@ -132,7 +156,7 @@ export default function SignUp() {
         <div className="flex-1">
           <form className="flex flex-col gap-4">
             <div className="">
-              <Label value="Your username" className="dark:text-gray-200" />
+            <span style={{ color: 'dark:text-gray-200' }}>Username</span>
               <TextInput
                 type="text"
                 placeholder="Username"
@@ -143,7 +167,7 @@ export default function SignUp() {
               />
             </div>
             <div className="">
-              <Label value="Your email" className="dark:text-gray-200" />
+            <span style={{ color: 'dark:text-gray-200' }}>Email</span>
               <TextInput
                 type="email"
                 placeholder="email@company.com"
@@ -154,7 +178,7 @@ export default function SignUp() {
               />
             </div>
             <div className="">
-              <Label value="Your password" className="dark:text-gray-200" />
+            <span style={{ color: 'dark:text-gray-200' }}>Password</span>
               <TextInput
                 type="password"
                 placeholder="Must minimum 6 characters, least 1 letter, 1 number"
