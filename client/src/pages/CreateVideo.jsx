@@ -7,11 +7,11 @@ import { useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 
 export default function CreateVideo() {
   const [file, setFile] = useState(null);
-  const [excelFile, setExcelFile] = useState(null);
+  // const [excelFile, setExcelFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
@@ -166,6 +166,7 @@ export default function CreateVideo() {
           </Button>
         </div> */}
         {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
+        {formData.image && <img src={formData.image} alt="upload" className="w-full h-72 object-cover" />}
         <ReactQuill
           theme="snow"
           placeholder="Write something..."

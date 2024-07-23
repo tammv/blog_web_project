@@ -73,7 +73,7 @@ export default function DashVideosAdmin() {
   const handleDeleteVideo = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(`/api/video/deleteVideo/${videoIdToDelete}`, {
+      const res = await fetch(`/api/video/deleteVideo/${videoIdToDelete}/${currentUser._id}`, {
         method: "DELETE",
       });
       const data = await res.json();
