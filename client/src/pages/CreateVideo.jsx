@@ -166,7 +166,7 @@ export default function CreateVideo() {
           </Button>
         </div> */}
         {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
-        {formData.image && <img src={formData.image} alt="upload" className="w-full h-72 object-cover" />}
+        {formData.img && <img src={formData.img} alt="upload" className="w-full h-72 object-cover" />}
         <ReactQuill
           theme="snow"
           placeholder="Write something..."

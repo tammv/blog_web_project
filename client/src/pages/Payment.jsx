@@ -58,7 +58,7 @@ const PaymentPage = () => {
     <div
       className="flex justify-center items-center h-screen bg-cover"
       style={{
-        backgroundImage: "url('https://i.pinimg.com/564x/f2/2d/2a/f22d2afa19665d3dcf1d1480f1f527c2.jpg')",
+        backgroundImage: "url('https://get.wallhere.com/photo/programming-language-technology-tilt-shift-computer-1937215.jpg')",
       }}
     >
       <div className="bg-white rounded-lg shadow-md p-6 w-96 text-center">
@@ -70,15 +70,15 @@ const PaymentPage = () => {
           />
         </div>
         <div className="mb-6">
-          <p className="text-lg font-bold text-gray-800">Thanh toán Premium</p>
-          <p className="text-lg font-bold text-gray-800">Giá tiền: 25.000 VNĐ</p>
+          <p className="text-lg font-bold text-gray-800">Premium Payment</p>
+          <p className="text-lg font-bold text-gray-800">Price: 25.000 VNĐ</p>
         </div>
         <button
           onClick={handleCreatePaymentLink}
           type="submit"
           className="bg-blue-500 text-white rounded-md px-6 py-3 font-medium text-lg hover:bg-blue-600 transition-colors"
         >
-          Bạn có chấp nhận lên hội viên siêu cấp tại DevB Blog
+          Are you accepted to become a super member at DevB Blog?
         </button>
       </div>
     </div>

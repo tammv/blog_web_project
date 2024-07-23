@@ -218,7 +218,7 @@ export default function DashUsers() {
                       <span
                         onClick={() => {
                           if (user.isAdmin) {
-                            setMessage('Không thể ban Admin');
+                            setMessage('Can not ban Admin!');
                             setShowMessageModal(true);
                           } else {
                             setShowModal(true);
@@ -234,7 +234,7 @@ export default function DashUsers() {
                       <span
                         onClick={() => {
                           if (user.isAdmin) {
-                            setMessage('Không thể ban admin');
+                            setMessage('Can not ban Admin!');
                             setShowMessageModal(true);
                           } else {
                             setShowModal(true);
@@ -252,7 +252,7 @@ export default function DashUsers() {
                     <span
                       onClick={() => {
                         if (user.isAdmin) {
-                          setMessage('Không thể delete Admin');
+                          setMessage('Can not delete Admin!');
                           setShowMessageModal(true);
                         } else {
                           setShowModal(true);

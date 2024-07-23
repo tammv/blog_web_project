@@ -105,12 +105,12 @@ const PaymentSuccess = () => {
                 <div className="product" style={{ marginBottom: '20px' }}>
                     <p style={{ margin: 0, padding: '5px 0' }}>
                         <strong style={{ fontWeight: 'bold', color: '#333', fontSize: '24px' }}>
-                            Thanh toán thành công
+                            Payment success
                         </strong>
                     </p>
                     <p style={{ margin: 0, padding: '5px 0' }}>
                         <strong style={{ fontWeight: 'bold', color: 'red', fontSize: '24px' }}>
-                            Vui lòng đăng nhập lại để cập nhập Premium
+                            Please log in again to update Premium
                         </strong>
                     </p>
                 </div>
@@ -127,10 +127,10 @@ const PaymentSuccess = () => {
                         transition: 'background-color 0.3s ease',
                     }}
                 >
-                    Trở về trang chủ ({countdown})
+                    Return to home page ({countdown})
                 </button>
                 {countdown === 0 && (
-                    <p style={{ marginTop: '20px', color: '#555' }}>Đang chuyển hướng về trang chủ...</p>
+                    <p style={{ marginTop: '20px', color: '#555' }}>Redirecting to the home page...</p>
                 )}
             </div>
         </div>
