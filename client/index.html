@@ -9,5 +9,17 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      const typebotInitScript = document.createElement("script");
+      typebotInitScript.type = "module";
+      typebotInitScript.innerHTML = `import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0.3/dist/web.js'
+
+Typebot.initBubble({
+  typebot: "faq-d2n2f8g",
+  theme: { button: { backgroundColor: "#0042DA" } },
+});
+`;
+      document.body.append(typebotInitScript);
+    </script>
   </body>
 </html>
