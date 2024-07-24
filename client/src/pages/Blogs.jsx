@@ -94,7 +94,7 @@ export default function Blogs() {
         onChange={(e) => setSearchQuery(e.target.value)}
         className="w-full p-2 mb-4 border border-gray-300 rounded"
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="flex flex-wrap justify-center gap-8">
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
             <div key={post._id}>
@@ -107,7 +107,7 @@ export default function Blogs() {
             </div>
           ))
         ) : (
-          <div className="text-center col-span-full">No posts found</div>
+          <div className="text-center w-full">No posts found</div>
         )}
       </div>
       <div className="flex justify-center mt-10">
